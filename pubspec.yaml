@@ -39,10 +39,16 @@ dependencies:
   firebase_core: ^2.13.1
   firebase_messaging: ^14.6.2
   share_plus: ^7.0.2
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  isar_generator: ^3.1.0+1
+  build_runner: any
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -1,6 +1,7 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:stalker/home/add_stalk_target_form.dart';
+import 'package:stalker/home/stalk_targets_widget.dart';
+import 'package:stalker/home/stalker_card.dart';
 import 'package:stalker/map/stalker_map_page.dart';
 
 class StalkerHomePage extends StatefulWidget {
@@ -11,19 +12,7 @@ class StalkerHomePage extends StatefulWidget {
 }
 
 class _StalkerHomePageState extends State<StalkerHomePage> {
-  String? token;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchToken().then((v) => setState(() => token = v));
-  }
-
-  Future<String?> _fetchToken() async {
-    final fcm = FirebaseMessaging.instance;
-    await fcm.requestPermission();
-    return FirebaseMessaging.instance.getToken();
-  }
+  Widget? addTargetForm;
 
   @override
   Widget build(BuildContext context) {
@@ -31,42 +20,46 @@ class _StalkerHomePageState extends State<StalkerHomePage> {
       appBar: AppBar(
         title: const Text('stalker'),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Material(
-              borderRadius: BorderRadius.circular(4),
-              color: Colors.pink,
-              child: InkWell(
-                  borderRadius: BorderRadius.circular(4),
-                  onTap: () {
-                    if (token != null) {
-                      Share.share(token!);
-                    }
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const StalkerCard(),
+            const StalkTargetsWidget(),
+            if (addTargetForm != null) addTargetForm!,
+            Center(
+              child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (c) => const StalkerMapPage(),
+                      ),
+                    );
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      token ?? '...',
-                      style: const TextStyle(fontSize: 10, color: Colors.white),
-                    ),
-                  )),
+                  child: const Text('Go to map')),
             ),
-          ),
-          Center(
-            child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (c) => const StalkerMapPage(),
-                    ),
-                  );
-                },
-                child: const Text('Go to map')),
-          ),
-        ],
+          ],
+        ),
       ),
+      floatingActionButton: addTargetForm != null
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                _launchAddTargetForm();
+              },
+              child: const Icon(Icons.remove_red_eye_outlined),
+            ),
     );
+  }
+
+  void _launchAddTargetForm() {
+    setState(() {
+      addTargetForm = AddStalkTargetForm(
+        onDone: () {
+          setState(() {
+            addTargetForm = null;
+          });
+        },
+      );
+    });
   }
 }
