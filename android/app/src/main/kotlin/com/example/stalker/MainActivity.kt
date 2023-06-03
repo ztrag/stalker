@@ -1,4 +1,4 @@
-package com.example.stalker
+package gartz.stalker
 
 import io.flutter.embedding.android.FlutterActivity
 
