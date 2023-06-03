@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "257664340444",
+    "firebase_url": "https://stalker-a01a3.firebaseio.com",
+    "project_id": "stalker-a01a3",
+    "storage_bucket": "stalker-a01a3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257664340444:android:acc6c34f17d010b0",
+        "android_client_info": {
+          "package_name": "gartz.stalker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257664340444-v56dcmduikjccpubub41h08bmmn9h5rv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gartz.stalker",
+            "certificate_hash": "a32f68d7b09cc928639cdd628023df1f146caf41"
+          }
+        },
+        {
+          "client_id": "257664340444-inaiaoaiv7srapfhrvqik3ckb0lnn8ls.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD96HGb7UhWL7kTCQXj-dYu-_7yqRzQSGw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257664340444-inaiaoaiv7srapfhrvqik3ckb0lnn8ls.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
