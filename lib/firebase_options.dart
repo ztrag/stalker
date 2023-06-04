@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -59,5 +56,17 @@ class DefaultFirebaseOptions {
     projectId: 'stalker-a01a3',
     databaseURL: 'https://stalker-a01a3.firebaseio.com',
     storageBucket: 'stalker-a01a3.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyDz7jXkpH7-YzUrVg9FpLTA9oNB6Z5C9lM',
+    appId: '1:257664340444:ios:596d050f3686a8e2deff19',
+    messagingSenderId: '257664340444',
+    projectId: 'stalker-a01a3',
+    databaseURL: 'https://stalker-a01a3.firebaseio.com',
+    storageBucket: 'stalker-a01a3.appspot.com',
+    androidClientId: '257664340444-v56dcmduikjccpubub41h08bmmn9h5rv.apps.googleusercontent.com',
+    iosClientId: '257664340444-mgukqua690d20ru319q92uj6u81290jb.apps.googleusercontent.com',
+    iosBundleId: 'gartz.stalker',
   );
 }

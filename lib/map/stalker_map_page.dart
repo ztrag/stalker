@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/stalk/stalk_machine.dart';
 
 class StalkerMapPage extends StatefulWidget {
   final StalkTarget stalkTarget;
@@ -12,6 +13,16 @@ class StalkerMapPage extends StatefulWidget {
 }
 
 class _StalkerMapPageState extends State<StalkerMapPage> {
+  late final StalkMachine stalkMachine;
+
+  @override
+  void initState() {
+    super.initState();
+
+    stalkMachine = StalkMachine(widget.stalkTarget);
+    stalkMachine.stalk();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -19,7 +19,7 @@ class _StalkerHomePageState extends State<StalkerHomePage> {
       appBar: AppBar(
         title: const Text('stalker'),
       ),
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
           children: [
             const StalkerCard(),

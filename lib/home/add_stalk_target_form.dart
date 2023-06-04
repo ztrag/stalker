@@ -12,6 +12,9 @@ class AddStalkTargetForm extends StatefulWidget {
 }
 
 class _AddStalkTargetFormState extends State<AddStalkTargetForm> {
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _profilePictureUrl = TextEditingController();
+  final TextEditingController _token = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,17 +33,20 @@ class _AddStalkTargetFormState extends State<AddStalkTargetForm> {
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
+                  controller: _name,
                   autofocus: true,
                   decoration: const InputDecoration(label: Text('Name')),
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
+                  controller: _profilePictureUrl,
                   decoration:
                       const InputDecoration(label: Text('Profile Picture Url')),
                   textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
+                  controller: _token,
                   decoration: const InputDecoration(label: Text('Token')),
                   onFieldSubmitted: (_) => _insertTarget(),
                 ),
@@ -66,9 +72,9 @@ class _AddStalkTargetFormState extends State<AddStalkTargetForm> {
 
   void _insertTarget() async {
     final target = StalkTarget();
-    target.name = 'Aa';
-    target.token = 'Ba';
-    target.profilePictureUrl = 'Ca';
+    target.name = _name.text;
+    target.profilePictureUrl = _profilePictureUrl.text;
+    target.token = _token.text;
 
     final db = await Db.db;
     await db.writeTxn(() => db.stalkTargets.put(target));

@@ -40,11 +40,13 @@ class _StalkTargetsWidgetState extends State<StalkTargetsWidget> {
       return Container();
     }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: targets.length,
-      itemBuilder: (context, index) => StalkTargetCard(
-        stalkTarget: targets[index],
+    return Expanded(
+      child: ListView.builder(
+        itemCount: targets.length,
+        padding: const EdgeInsets.only(bottom: 70),
+        itemBuilder: (context, index) => StalkTargetCard(
+          stalkTarget: targets[index],
+        ),
       ),
     );
   }
