@@ -23,9 +23,10 @@ class _AddStalkTargetFormState extends State<AddStalkTargetForm> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
+                const SizedBox(height: 4),
                 const Text(
                   'Add a new contact',
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(

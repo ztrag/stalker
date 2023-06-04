@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:stalker/home/add_stalk_target_form.dart';
 import 'package:stalker/home/stalk_targets_widget.dart';
 import 'package:stalker/home/stalker_card.dart';
-import 'package:stalker/map/stalker_map_page.dart';
 
 class StalkerHomePage extends StatefulWidget {
   const StalkerHomePage({Key? key}) : super(key: key);
@@ -26,17 +25,6 @@ class _StalkerHomePageState extends State<StalkerHomePage> {
             const StalkerCard(),
             const StalkTargetsWidget(),
             if (addTargetForm != null) addTargetForm!,
-            Center(
-              child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (c) => const StalkerMapPage(),
-                      ),
-                    );
-                  },
-                  child: const Text('Go to map')),
-            ),
           ],
         ),
       ),
