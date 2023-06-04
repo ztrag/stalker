@@ -17,18 +17,38 @@ const StalkTargetSchema = CollectionSchema(
   name: r'StalkTarget',
   id: -5723879998545436765,
   properties: {
-    r'name': PropertySchema(
+    r'lastLocationAccuracy': PropertySchema(
       id: 0,
+      name: r'lastLocationAccuracy',
+      type: IsarType.double,
+    ),
+    r'lastLocationLatitude': PropertySchema(
+      id: 1,
+      name: r'lastLocationLatitude',
+      type: IsarType.double,
+    ),
+    r'lastLocationLongitude': PropertySchema(
+      id: 2,
+      name: r'lastLocationLongitude',
+      type: IsarType.double,
+    ),
+    r'lastLocationTimestamp': PropertySchema(
+      id: 3,
+      name: r'lastLocationTimestamp',
+      type: IsarType.dateTime,
+    ),
+    r'name': PropertySchema(
+      id: 4,
       name: r'name',
       type: IsarType.string,
     ),
     r'profilePictureUrl': PropertySchema(
-      id: 1,
+      id: 5,
       name: r'profilePictureUrl',
       type: IsarType.string,
     ),
     r'token': PropertySchema(
-      id: 2,
+      id: 6,
       name: r'token',
       type: IsarType.string,
     )
@@ -120,9 +140,13 @@ void _stalkTargetSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.name);
-  writer.writeString(offsets[1], object.profilePictureUrl);
-  writer.writeString(offsets[2], object.token);
+  writer.writeDouble(offsets[0], object.lastLocationAccuracy);
+  writer.writeDouble(offsets[1], object.lastLocationLatitude);
+  writer.writeDouble(offsets[2], object.lastLocationLongitude);
+  writer.writeDateTime(offsets[3], object.lastLocationTimestamp);
+  writer.writeString(offsets[4], object.name);
+  writer.writeString(offsets[5], object.profilePictureUrl);
+  writer.writeString(offsets[6], object.token);
 }
 
 StalkTarget _stalkTargetDeserialize(
@@ -133,9 +157,13 @@ StalkTarget _stalkTargetDeserialize(
 ) {
   final object = StalkTarget();
   object.id = id;
-  object.name = reader.readStringOrNull(offsets[0]);
-  object.profilePictureUrl = reader.readStringOrNull(offsets[1]);
-  object.token = reader.readStringOrNull(offsets[2]);
+  object.lastLocationAccuracy = reader.readDoubleOrNull(offsets[0]);
+  object.lastLocationLatitude = reader.readDoubleOrNull(offsets[1]);
+  object.lastLocationLongitude = reader.readDoubleOrNull(offsets[2]);
+  object.lastLocationTimestamp = reader.readDateTimeOrNull(offsets[3]);
+  object.name = reader.readStringOrNull(offsets[4]);
+  object.profilePictureUrl = reader.readStringOrNull(offsets[5]);
+  object.token = reader.readStringOrNull(offsets[6]);
   return object;
 }
 
@@ -147,10 +175,18 @@ P _stalkTargetDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 2:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 3:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 4:
+      return (reader.readStringOrNull(offset)) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -802,6 +838,332 @@ extension StalkTargetQueryFilter
     });
   }
 
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationAccuracyIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastLocationAccuracy',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationAccuracyIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastLocationAccuracy',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationAccuracyEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastLocationAccuracy',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationAccuracyGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastLocationAccuracy',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationAccuracyLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastLocationAccuracy',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationAccuracyBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastLocationAccuracy',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLatitudeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastLocationLatitude',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLatitudeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastLocationLatitude',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLatitudeEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastLocationLatitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLatitudeGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastLocationLatitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLatitudeLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastLocationLatitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLatitudeBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastLocationLatitude',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLongitudeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastLocationLongitude',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLongitudeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastLocationLongitude',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLongitudeEqualTo(
+    double? value, {
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastLocationLongitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLongitudeGreaterThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastLocationLongitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLongitudeLessThan(
+    double? value, {
+    bool include = false,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastLocationLongitude',
+        value: value,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationLongitudeBetween(
+    double? lower,
+    double? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    double epsilon = Query.epsilon,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastLocationLongitude',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationTimestampIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastLocationTimestamp',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationTimestampIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastLocationTimestamp',
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationTimestampEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastLocationTimestamp',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationTimestampGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastLocationTimestamp',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationTimestampLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastLocationTimestamp',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+      lastLocationTimestampBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastLocationTimestamp',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1262,6 +1624,62 @@ extension StalkTargetQueryLinks
 
 extension StalkTargetQuerySortBy
     on QueryBuilder<StalkTarget, StalkTarget, QSortBy> {
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationAccuracy() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationAccuracy', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationAccuracyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationAccuracy', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationLatitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLatitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationLatitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLatitude', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationLongitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLongitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationLongitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLongitude', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationTimestamp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationTimestamp', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      sortByLastLocationTimestampDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationTimestamp', Sort.desc);
+    });
+  }
+
   QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1315,6 +1733,62 @@ extension StalkTargetQuerySortThenBy
     });
   }
 
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationAccuracy() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationAccuracy', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationAccuracyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationAccuracy', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationLatitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLatitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationLatitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLatitude', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationLongitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLongitude', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationLongitudeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationLongitude', Sort.desc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationTimestamp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationTimestamp', Sort.asc);
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
+      thenByLastLocationTimestampDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastLocationTimestamp', Sort.desc);
+    });
+  }
+
   QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1356,6 +1830,34 @@ extension StalkTargetQuerySortThenBy
 
 extension StalkTargetQueryWhereDistinct
     on QueryBuilder<StalkTarget, StalkTarget, QDistinct> {
+  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
+      distinctByLastLocationAccuracy() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastLocationAccuracy');
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
+      distinctByLastLocationLatitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastLocationLatitude');
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
+      distinctByLastLocationLongitude() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastLocationLongitude');
+    });
+  }
+
+  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
+      distinctByLastLocationTimestamp() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastLocationTimestamp');
+    });
+  }
+
   QueryBuilder<StalkTarget, StalkTarget, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1384,6 +1886,34 @@ extension StalkTargetQueryProperty
   QueryBuilder<StalkTarget, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<StalkTarget, double?, QQueryOperations>
+      lastLocationAccuracyProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastLocationAccuracy');
+    });
+  }
+
+  QueryBuilder<StalkTarget, double?, QQueryOperations>
+      lastLocationLatitudeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastLocationLatitude');
+    });
+  }
+
+  QueryBuilder<StalkTarget, double?, QQueryOperations>
+      lastLocationLongitudeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastLocationLongitude');
+    });
+  }
+
+  QueryBuilder<StalkTarget, DateTime?, QQueryOperations>
+      lastLocationTimestampProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastLocationTimestamp');
     });
   }
 

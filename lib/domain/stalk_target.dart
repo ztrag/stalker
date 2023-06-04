@@ -14,4 +14,12 @@ class StalkTarget {
 
   @Index(type: IndexType.value)
   String? profilePictureUrl;
+
+  double? lastLocationLatitude;
+
+  double? lastLocationLongitude;
+
+  DateTime? lastLocationTimestamp;
+
+  double? lastLocationAccuracy;
 }

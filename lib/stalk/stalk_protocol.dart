@@ -94,7 +94,7 @@ class StalkProtocol {
   }
 
   Future<bool> sendStalkMessage(String token, StalkAction action,
-      [Map<String, dynamic> data = const {'x': 2}]) {
+      [Map<String, dynamic> data = const {}]) {
     return _sendFcm(
       token,
       <String, dynamic>{
@@ -107,12 +107,12 @@ class StalkProtocol {
   Future<bool> _sendFcm(String token, Map<String, dynamic> data) async {
     final sender = await FirebaseMessaging.instance.getToken();
     final json = jsonEncode(
-        <String, dynamic>{
-          'priority': 'high',
-          'data': <String, dynamic>{...data, 'f': sender!},
-          "to": token,
-        },
-      );
+      <String, dynamic>{
+        'priority': 'high',
+        'data': <String, dynamic>{...data, 'f': sender!},
+        "to": token,
+      },
+    );
     final result = await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: <String, String>{
@@ -131,10 +131,16 @@ class StalkProtocol {
   }
 
   void _storeLocation(StalkMessage message) async {
-    final data = jsonDecode(message.data['d']);
-    print('storing $data');
-    // final db = await Db.db;
-    // db.stalkTargets.put(message)
+    final positionData = jsonDecode(message.data['d'])['position'];
+    final target = message.sender;
+    target.lastLocationLatitude = positionData['la'];
+    target.lastLocationLongitude = positionData['lo'];
+    target.lastLocationTimestamp =
+        DateTime.fromMillisecondsSinceEpoch(positionData['t']);
+    target.lastLocationAccuracy = positionData['a'];
+
+    final db = await Db.db;
+    db.writeTxn(() => db.stalkTargets.put(target));
   }
 
   Map<String, dynamic>? get _mappedPosition {
@@ -146,6 +152,7 @@ class StalkProtocol {
       'la': position.latitude,
       'lo': position.longitude,
       't': (position.timestamp ?? DateTime.now()).millisecondsSinceEpoch,
+      'a': position.accuracy,
     };
   }
 }

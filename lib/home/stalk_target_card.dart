@@ -58,33 +58,31 @@ class _TopRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (stalkTarget.profilePictureUrl != null) ...[
-          SizedBox(
-            width: 60,
-            height: 60,
-            child: PopupMenuButton<String>(
-              onSelected: (String item) {
-                if (item == 'Delete') {
-                  _delete();
-                }
-              },
-              itemBuilder: (c) => ['Delete']
-                  .map(
-                    (e) => const PopupMenuItem<String>(
-                      value: 'Delete',
-                      child: Text('Delete'),
-                    ),
-                  )
-                  .toList(),
-              child: Image(
-                image: NetworkImage(stalkTarget.profilePictureUrl!),
-                errorBuilder: (c, _, __) =>
-                    const Icon(Icons.image_not_supported_outlined),
-              ),
+        SizedBox(
+          width: 60,
+          height: 60,
+          child: PopupMenuButton<String>(
+            onSelected: (String item) {
+              if (item == 'Delete') {
+                _delete();
+              }
+            },
+            itemBuilder: (c) => ['Delete']
+                .map(
+                  (e) => const PopupMenuItem<String>(
+                    value: 'Delete',
+                    child: Text('Delete'),
+                  ),
+                )
+                .toList(),
+            child: Image(
+              image: NetworkImage(stalkTarget.profilePictureUrl ?? ''),
+              errorBuilder: (c, _, __) =>
+                  const Icon(Icons.image_not_supported_outlined),
             ),
           ),
-          const SizedBox(width: 8),
-        ],
+        ),
+        const SizedBox(width: 8),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,18 +125,18 @@ class _BottomRow extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
+              children: [
+                const Text(
                   'Last seen',
                   style: TextStyle(fontSize: 7),
                 ),
                 Text(
-                  '2d ago',
+                  '${stalkTarget.lastLocationTimestamp}',
                   style: TextStyle(fontSize: 12),
                 ),
                 Text(
-                  '@45.4343,-122.3232',
-                  style: TextStyle(fontSize: 7),
+                  '@${stalkTarget.lastLocationLatitude},${stalkTarget.lastLocationLatitude}',
+                  style: const TextStyle(fontSize: 7),
                 ),
               ],
             ),
