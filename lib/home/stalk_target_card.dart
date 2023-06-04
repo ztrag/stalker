@@ -30,7 +30,10 @@ class _StalkTargetCardState extends State<StalkTargetCard> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                _TopRow(stalkTarget: widget.stalkTarget),
+                _TopRow(
+                  stalkTarget: widget.stalkTarget,
+                  isExpanded: _isExpanded,
+                ),
                 if (_isExpanded) _BottomRow(stalkTarget: widget.stalkTarget),
               ],
             ),
@@ -43,8 +46,10 @@ class _StalkTargetCardState extends State<StalkTargetCard> {
 
 class _TopRow extends StatelessWidget {
   final StalkTarget stalkTarget;
+  final bool isExpanded;
 
-  const _TopRow({Key? key, required this.stalkTarget}) : super(key: key);
+  const _TopRow({Key? key, required this.stalkTarget, required this.isExpanded})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +78,15 @@ class _TopRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${stalkTarget.name}'),
-              Text('${stalkTarget.token}'),
+              Text(
+                '${stalkTarget.name}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Text(
+                '${stalkTarget.token}',
+                maxLines: isExpanded ? null : 2,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ],
           ),
         ),
