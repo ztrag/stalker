@@ -1,29 +1,60 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/stalk/stalk_protocol.dart';
 
 enum StalkMachineAction {
   sendingRequest,
   failedRequest,
   sentRequest,
-  receivedResponse,
+  ackRequest,
 }
 
 class StalkMachine {
   final StalkTarget target;
   final ValueNotifier<Map<DateTime, StalkMachineAction>> history =
       ValueNotifier({});
+  StreamSubscription<StalkMessage>? _messagesWatch;
 
   StalkMachine(this.target);
 
-  void stalk() {
+  void dispose() {
+    _messagesWatch?.cancel();
+  }
+
+  void _handleMessage(StalkMessage message) {
+    if (message.sender.id != target.id) {
+      return;
+    }
+    switch (message.action) {
+      case StalkAction.stalkRequest:
+        // FIXME: Other user is stalking me too.
+        return;
+      case StalkAction.stalkRequestAck:
+        _addToHistory(StalkMachineAction.ackRequest);
+        return;
+    }
+  }
+
+  void stalk() async {
+    _messagesWatch ??= StalkProtocol.messages.listen(_handleMessage);
     _addToHistory(StalkMachineAction.sendingRequest);
-    sendPushMessage(
-      target.token!,
-      {'action': 'stalk-request'},
-    );
+    final result = await StalkProtocol()
+        .sendStalkMessage(target.token!, StalkAction.stalkRequest);
+
+    _addToHistory(result
+        ? StalkMachineAction.sentRequest
+        : StalkMachineAction.failedRequest);
+    if (!result) {
+      throw 'FAIL';
+    }
+  }
+
+  void ack() {
+    _addToHistory(StalkMachineAction.ackRequest);
   }
 
   void _addToHistory(StalkMachineAction action) {

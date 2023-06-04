@@ -24,6 +24,12 @@ class _StalkerMapPageState extends State<StalkerMapPage> {
     stalkMachine = StalkMachine(widget.stalkTarget);
     stalkMachine.stalk();
   }
+  
+  @override
+  void dispose() {
+    stalkMachine.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
