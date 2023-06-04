@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/stalk_target.dart';
 import 'package:stalker/map/stalker_map_page.dart';
 
@@ -61,10 +62,20 @@ class _TopRow extends StatelessWidget {
           SizedBox(
             width: 60,
             height: 60,
-            child: InkWell(
-              onTap: () {
-                print('Target menu...');
+            child: PopupMenuButton<String>(
+              onSelected: (String item) {
+                if (item == 'Delete') {
+                  _delete();
+                }
               },
+              itemBuilder: (c) => ['Delete']
+                  .map(
+                    (e) => const PopupMenuItem<String>(
+                      value: 'Delete',
+                      child: Text('Delete'),
+                    ),
+                  )
+                  .toList(),
               child: Image(
                 image: NetworkImage(stalkTarget.profilePictureUrl!),
                 errorBuilder: (c, _, __) =>
@@ -93,6 +104,11 @@ class _TopRow extends StatelessWidget {
         Switch(value: true, onChanged: (v) {}),
       ],
     );
+  }
+
+  void _delete() async {
+    final db = await Db.db;
+    db.writeTxn(() => db.stalkTargets.delete(stalkTarget.id));
   }
 }
 
