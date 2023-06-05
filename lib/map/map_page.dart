@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/stalk_target.dart';
-import 'package:stalker/profile_picture/profile_picture_provider.dart';
+import 'package:stalker/profile/profile_picture_provider.dart';
 import 'package:stalker/stalk/stalk_machine_widget.dart';
 
 class MapPage extends StatefulWidget {
