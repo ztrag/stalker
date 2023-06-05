@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/profile_picture/profile_picture_provider.dart';
 import 'package:stalker/stalk/stalk_machine_widget.dart';
 
 class MapPage extends StatefulWidget {
@@ -19,17 +21,26 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   late StreamSubscription<StalkTarget?> targetDbSubscription;
   StalkTarget? updatedTarget;
+  Uint8List? targetIconBytes;
 
   @override
   void initState() {
     super.initState();
     _monitorTarget();
+    _fechTargetIcon();
   }
 
   @override
   void dispose() {
     targetDbSubscription.cancel();
     super.dispose();
+  }
+
+  void _fechTargetIcon() async {
+    targetIconBytes = await ProfilePictureFetcher().fetch(
+      widget.stalkTarget.profilePictureUrl!,
+    );
+    setState(() {});
   }
 
   void _monitorTarget() async {
@@ -55,13 +66,15 @@ class _MapPageState extends State<MapPage> {
             ? Container()
             : GoogleMap(
                 markers: {
-                  Marker(
-                    markerId: MarkerId('${widget.stalkTarget.id}'),
-                    position: LatLng(
-                      t.lastLocationLatitude!,
-                      t.lastLocationLongitude!,
+                  if (targetIconBytes != null)
+                    Marker(
+                      markerId: MarkerId('${widget.stalkTarget.id}'),
+                      position: LatLng(
+                        t.lastLocationLatitude!,
+                        t.lastLocationLongitude!,
+                      ),
+                      icon: BitmapDescriptor.fromBytes(targetIconBytes!),
                     ),
-                  ),
                 },
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
