@@ -59,8 +59,8 @@ class _TopRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: 60,
-          height: 60,
+          width: 80,
+          height: 80,
           child: PopupMenuButton<String>(
             onSelected: (String item) {
               if (item == 'Delete') {
@@ -93,7 +93,8 @@ class _TopRow extends StatelessWidget {
               ),
               Text(
                 '${stalkTarget.token}',
-                maxLines: isExpanded ? null : 2,
+                maxLines: isExpanded ? 4 : 2,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -132,7 +133,7 @@ class _BottomRow extends StatelessWidget {
                 ),
                 Text(
                   '${stalkTarget.lastLocationTimestamp}',
-                  style: TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12),
                 ),
                 Text(
                   '@${stalkTarget.lastLocationLatitude},${stalkTarget.lastLocationLatitude}',
