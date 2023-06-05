@@ -1,16 +1,41 @@
 # stalker
 
-A new Flutter project.
+Find someone.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+## TODO
+FirebaseStorage.instance.ref('z1.png').getDownloadURL().then((value) => print('url [$value]'));
 
-A few resources to get you started if this is your first Flutter project:
+Profile Settings
+1. ProfileSettingsPage.
+2. Set/Change Profile Picture button.
+3. Set/Change Name button.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Name
+1. UI -> query name.
+2. Store in DB.
+3. Upload to firebase. `token.hashcode-name`
+4. Fetch and cache after adding stalk target.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Profile Picture
+1. ImagePicker -> Select from gallery.
+2. Compress image -> Scale to 1024x1024.
+3. Process background to transparent.
+4. Compress image -> Scale to 256x256.
+5. Upload to firebase. `token.hashCode-icon`
+6. Fetch and cache link after adding stalk target.
+
+### Chat
+. Chat Model / db.
+. Chat Protocol -> Send/receive and store in db.
+. ChatPage -> Launch from home.
+. ChatPage appBar -> Go to MagPage.
+. ChatPage chats -> Show chat history
+. HomePage -> Show last message.
+
+### MapPage
+. Stalk button.
+
+###TODO Background/Notification
+. Test background fcm.

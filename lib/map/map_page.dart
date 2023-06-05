@@ -62,11 +62,11 @@ class _MapPageState extends State<MapPage> {
         appBar: AppBar(
           title: Text('stalking ${widget.stalkTarget.name ?? ''}'),
         ),
-        body: Platform.isIOS || !_hasLocation(t)
+        body: Platform.isIOS
             ? Container()
             : GoogleMap(
                 markers: {
-                  if (targetIconBytes != null)
+                  if (targetIconBytes != null && _hasLocation(t))
                     Marker(
                       markerId: MarkerId('${widget.stalkTarget.id}'),
                       position: LatLng(
@@ -78,8 +78,8 @@ class _MapPageState extends State<MapPage> {
                 },
                 initialCameraPosition: CameraPosition(
                   target: LatLng(
-                    widget.stalkTarget.lastLocationLatitude!,
-                    widget.stalkTarget.lastLocationLongitude!,
+                    t.lastLocationLatitude ?? 0,
+                    t.lastLocationLongitude ?? 0,
                   ),
                   zoom: 14,
                 ),
