@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,27 +20,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
-        actions: [IconButton(onPressed: _onEditDone, icon: const Icon(Icons.done))],
+        actions: [
+          IconButton(onPressed: _onEditDone, icon: const Icon(Icons.done))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
+        child: Column(
           children: [
-            SizedBox(
-              width: 80,
-              height: 80,
-              child: TextButton(
-                onPressed: _pickImage,
-                child: pickedImage == null
-                    ? const Icon(Icons.image)
-                    : Image.file(File(pickedImage!.path)),
-              ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: TextButton(
+                    onPressed: _pickImage,
+                    child: pickedImage == null
+                        ? const Icon(Icons.image)
+                        : Image.file(File(pickedImage!.path)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(label: Text('Name')),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(label: Text('Name')),
+            const SizedBox(height: 8),
+            Divider(),
+            const SizedBox(height: 8),
+            ListTile(
+              title: Text('Position'),
+              subtitle: Text('Enabled users will be able to stalk me.'),
+              trailing: Switch(value: true, onChanged: (v) {}),
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              title: Text('Token'),
+              subtitle: Text(
+                  'snatoehu snathoe usnthao esunthsaoetuh sntaohesuthasoe uth.'),
+              trailing: IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () {
+                  print('share');
+                },
               ),
             ),
           ],
