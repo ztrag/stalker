@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/location/position_fetcher.dart';
 import 'package:stalker/stalk/stalk_protocol.dart';
 
 enum StalkMachineAction {
@@ -36,14 +37,19 @@ class StalkMachine {
       case StalkAction.stalkRequestAck:
         _addToHistory(StalkMachineAction.ackRequest);
         return;
+      case StalkAction.locationShare:
+        return;
     }
   }
 
   void stalk() async {
     _messagesWatch ??= StalkProtocol.messages.listen(_handleMessage);
     _addToHistory(StalkMachineAction.sendingRequest);
-    final result = await StalkProtocol()
-        .sendStalkMessage(target.token!, StalkAction.stalkRequest);
+    final stalkRequestFuture =
+        StalkProtocol().sendMessage(target, StalkAction.stalkRequest);
+    StalkProtocol()
+        .sendPosition(target, await LocationFetcher.getCurrentPosition());
+    final result = await stalkRequestFuture;
 
     _addToHistory(result
         ? StalkMachineAction.sentRequest

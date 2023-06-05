@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/stalk_target.dart';
-import 'package:stalker/map/stalker_map_page.dart';
+import 'package:stalker/map/map_page.dart';
 
 class StalkTargetCard extends StatefulWidget {
   final StalkTarget stalkTarget;
@@ -145,7 +145,7 @@ class _BottomRow extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (c) => StalkerMapPage(stalkTarget: stalkTarget),
+                  builder: (c) => MapPage(stalkTarget: stalkTarget),
                 ),
               );
             },

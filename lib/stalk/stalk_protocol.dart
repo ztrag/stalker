@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/stalk_target.dart';
-import 'package:stalker/location/location_fetcher.dart';
+import 'package:stalker/location/position_fetcher.dart';
 
 enum StalkAction {
   stalkRequest(1),
@@ -46,7 +47,7 @@ class StalkProtocol {
   StalkProtocol();
 
   void handleFcm(RemoteMessage message) async {
-    print('[fcm] ${message.data}');
+    print('[fcm] incoming -> ${message.data}');
     final db = await Db.db;
     final sender = message.data['f'];
     final targets =
@@ -68,19 +69,19 @@ class StalkProtocol {
     _messageStreamController.sink.add(message);
     switch (message.action) {
       case StalkAction.stalkRequest:
-        sendStalkMessage(message.sender.token!, StalkAction.stalkRequestAck);
+        sendMessage(message.sender, StalkAction.stalkRequestAck);
+
         listener() {
-          sendStalkMessage(
-            message.sender.token!,
-            StalkAction.locationShare,
-            {'position': _mappedPosition},
-          );
+          final position = LocationFetcher.position.value;
+          if (position != null) {
+            sendPosition(message.sender, position);
+          }
         }
         print('Tracking location...');
         LocationFetcher.trackLocation();
-        LocationFetcher.currentPosition.addListener(listener);
+        LocationFetcher.position.addListener(listener);
         Future.delayed(const Duration(seconds: 10), () {
-          LocationFetcher.currentPosition.removeListener(listener);
+          LocationFetcher.position.removeListener(listener);
           LocationFetcher.stopTracking();
           print('Tracking stopped');
         });
@@ -93,14 +94,25 @@ class StalkProtocol {
     }
   }
 
-  Future<bool> sendStalkMessage(String token, StalkAction action,
-      [Map<String, dynamic> data = const {}]) {
+  Future<bool> sendMessage(
+    StalkTarget target,
+    StalkAction action, [
+    Map<String, dynamic> data = const {},
+  ]) {
     return _sendFcm(
-      token,
+      target.token!,
       <String, dynamic>{
         'c': action.code,
         if (data.isNotEmpty) 'd': data,
       },
+    );
+  }
+
+  Future<bool> sendPosition(StalkTarget target, Position position) {
+    return sendMessage(
+      target,
+      StalkAction.locationShare,
+      {'position': _getMappedPosition(position)},
     );
   }
 
@@ -123,7 +135,7 @@ class StalkProtocol {
       body: json,
     );
 
-    print('${result.statusCode}:${result.body}');
+    print('[fcm] outgoing -> $data ${result.statusCode}:${result.body}');
     if (result.statusCode == 200) {
       return true;
     }
@@ -143,8 +155,7 @@ class StalkProtocol {
     db.writeTxn(() => db.stalkTargets.put(target));
   }
 
-  Map<String, dynamic>? get _mappedPosition {
-    final position = LocationFetcher.currentPosition.value;
+  Map<String, dynamic>? _getMappedPosition(Position? position) {
     if (position == null) {
       return null;
     }
