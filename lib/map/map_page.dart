@@ -77,7 +77,7 @@ class _MapPageState extends State<MapPage> {
                       liveUser.value?.lastLocationLongitude ??
                           -122.69094861252296,
                     ),
-                    zoom: 14,
+                    zoom: 16,
                   ),
                 ),
         ),

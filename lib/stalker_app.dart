@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stalker/home/home_page.dart';
+import 'package:stalker/theme/theme.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/edit_active_user_page.dart';
 
@@ -18,7 +19,7 @@ class StalkerApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
-        colorSchemeSeed: Colors.pink,
+        colorScheme: getDarkColorScheme(),
       ),
       home: _home,
     );
