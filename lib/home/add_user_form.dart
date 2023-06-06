@@ -19,22 +19,49 @@ class _AddUserFormState extends State<AddUserForm> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Card(
+      child: Material(
         elevation: 10,
+        borderRadius: BorderRadius.circular(8.0),
         child: Form(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextFormField(
-                  autofocus: true,
-                  controller: _token,
-                  decoration: const InputDecoration(label: Text('Token')),
-                  onFieldSubmitted: (_) => _addUser(),
-                ),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        bottom: 16.0,
+                      ),
+                      child: TextFormField(
+                        autofocus: true,
+                        controller: _token,
+                        decoration: const InputDecoration(label: Text('Token')),
+                        onFieldSubmitted: (_) => _addUser(),
+                      ),
+                    ),
+                  ),
+                  AnimatedBuilder(
+                    animation: _token,
+                    builder: (_, __) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 60,
+                        height: 50,
+                        child: IconButton(
+                          color: Theme.of(context).colorScheme.primary,
+                          icon: _token.text.isEmpty
+                              ? const Icon(Icons.close)
+                              : const Icon(Icons.done),
+                          onPressed: _addUser,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

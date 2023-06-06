@@ -42,6 +42,9 @@ class _UserEnabledSwitchState extends State<UserEnabledSwitch> {
 
   @override
   Widget build(BuildContext context) {
+    if (liveUser.value == null) {
+      return Container();
+    }
     final isActiveUser = ActiveUser().value!.id == liveUser.value!.id;
     return AnimatedBuilder(
       animation: Listenable.merge([liveUser, if (!isActiveUser) ActiveUser()]),

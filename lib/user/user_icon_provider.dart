@@ -14,7 +14,7 @@ class UserIconProvider extends ChangeNotifier {
   UserIconProvider._();
 
   factory UserIconProvider() => _instance;
-  
+
   void store(User user, Uint8List data) {
     _cache[user.id] = data;
     notifyListeners();
@@ -56,6 +56,12 @@ class UserIconProvider extends ChangeNotifier {
   }
 
   Future<Uint8List?> _fetchFromNetwork(User user) async {
-    return FirebaseStorage.instance.ref('${user.token.hashCode}').getData();
+    try {
+      final data = await FirebaseStorage.instance
+          .ref('${user.token.hashCode}')
+          .getData();
+      return data;
+    } catch (_) {}
+    return null;
   }
 }
