@@ -18,13 +18,28 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('stalker'),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const UsersListWidget(),
-            if (addUserForm != null) addUserForm!,
-          ],
-        ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                opacity: 0.15,
+                image: NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/stalker-a01a3.appspot.com/o/bg.webp?alt=media&token=dbec09fc-84e4-4dc3-b974-c976fd3da1ef',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Column(
+              children: [
+                const UsersListWidget(),
+                if (addUserForm != null) addUserForm!,
+              ],
+            ),
+          ),
+        ],
       ),
       floatingActionButton: addUserForm != null
           ? null

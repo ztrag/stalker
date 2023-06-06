@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:stalker/map/map_page.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/edit_active_user_page.dart';
 import 'package:stalker/user/user_icon_widget.dart';
@@ -14,7 +13,7 @@ class StalkerCard extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Material(
         borderRadius: BorderRadius.circular(4),
-        color: Colors.pink,
+        color: Theme.of(context).primaryColor,
         child: InkWell(
           borderRadius: BorderRadius.circular(4),
           onTap: () {
@@ -60,8 +59,7 @@ class StalkerCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Switch(
-                    value: true, onChanged: (v) {}, activeColor: Colors.white),
+                Switch(value: true, onChanged: (v) {}),
               ],
             ),
           ),

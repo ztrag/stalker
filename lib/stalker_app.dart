@@ -11,7 +11,13 @@ class StalkerApp extends StatelessWidget {
     return MaterialApp(
       title: 'stalker',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        useMaterial3: true,
+        colorSchemeSeed: Colors.pink,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        colorSchemeSeed: Colors.pink,
       ),
       home: _home,
     );

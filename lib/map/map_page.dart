@@ -69,10 +69,13 @@ class _MapPageState extends State<MapPage> {
                         icon: BitmapDescriptor.fromBytes(targetIconBytes!),
                       ),
                   },
+                  mapType: MapType.satellite,
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
-                      liveUser.value?.lastLocationLatitude ?? 0,
-                      liveUser.value?.lastLocationLongitude ?? 0,
+                      liveUser.value?.lastLocationLatitude ??
+                          45.529203417794825,
+                      liveUser.value?.lastLocationLongitude ??
+                          -122.69094861252296,
                     ),
                     zoom: 14,
                   ),

@@ -62,8 +62,8 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
                 SizedBox(
                   width: 80,
                   height: 80,
-                  child: TextButton(
-                    onPressed: _pickImage,
+                  child: InkWell(
+                    onTap: _pickImage,
                     child: pickedImage == null
                         ? UserIconWidget(
                             user: editUser,

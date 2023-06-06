@@ -31,9 +31,11 @@ class _UserIconWidgetState extends State<UserIconWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _image != null
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: _image != null
         ? Image.memory(_image!, errorBuilder: (c, _, __) => _errorWidget)
-        : _errorWidget;
+        : _errorWidget);
   }
 
   Widget get _errorWidget {
