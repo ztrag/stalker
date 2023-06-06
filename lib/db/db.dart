@@ -1,6 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/domain/user.dart';
 
 class Db {
   static final Future<Isar> db = _open();
@@ -8,7 +8,7 @@ class Db {
   static Future<Isar> _open() async {
     final dir = await getApplicationDocumentsDirectory();
     return Isar.open(
-      [StalkTargetSchema],
+      [UserSchema],
       directory: dir.path,
     );
   }

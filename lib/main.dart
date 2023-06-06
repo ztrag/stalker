@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:stalker/stalk/stalk_protocol.dart';
-import 'package:stalker/stalker.dart';
+import 'package:stalker/stalker_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +13,7 @@ void main() async {
     StalkProtocol().handleFcm(message);
   });
 
-  runApp(const Stalker());
+  runApp(const StalkerApp());
 }
 
 @pragma('vm:entry-point')

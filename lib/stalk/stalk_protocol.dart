@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
-import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/domain/user.dart';
 import 'package:stalker/location/position_fetcher.dart';
 
 enum StalkAction {
@@ -28,7 +28,7 @@ enum StalkAction {
 
 class StalkMessage {
   final StalkAction action;
-  final StalkTarget sender;
+  final User sender;
   final Map<String, dynamic> data;
 
   StalkMessage({
@@ -50,9 +50,8 @@ class StalkProtocol {
     print('[fcm] incoming -> ${message.data}');
     final db = await Db.db;
     final sender = message.data['f'];
-    final targets =
-        await db.stalkTargets.where().tokenEqualTo(sender).findAll();
-    if (targets.isEmpty) {
+    final users = await db.users.where().tokenEqualTo(sender).findAll();
+    if (users.isEmpty) {
       // FIXME Spam feature
       return;
     }
@@ -60,7 +59,7 @@ class StalkProtocol {
     final stalkAction = StalkAction.fromCode(int.parse(message.data['c']));
     _handleStalkMessage(StalkMessage(
       action: stalkAction,
-      sender: targets.first,
+      sender: users.last,
       data: message.data,
     ));
   }
@@ -95,7 +94,7 @@ class StalkProtocol {
   }
 
   Future<bool> sendMessage(
-    StalkTarget target,
+    User target,
     StalkAction action, [
     Map<String, dynamic> data = const {},
   ]) {
@@ -108,7 +107,7 @@ class StalkProtocol {
     );
   }
 
-  Future<bool> sendPosition(StalkTarget target, Position position) {
+  Future<bool> sendPosition(User target, Position position) {
     return sendMessage(
       target,
       StalkAction.locationShare,
@@ -152,7 +151,7 @@ class StalkProtocol {
     target.lastLocationAccuracy = positionData['a'];
 
     final db = await Db.db;
-    db.writeTxn(() => db.stalkTargets.put(target));
+    db.writeTxn(() => db.users.put(target));
   }
 
   Map<String, dynamic>? _getMappedPosition(Position? position) {

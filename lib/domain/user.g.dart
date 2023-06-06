@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'stalk_target.dart';
+part of 'user.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,54 +9,59 @@ part of 'stalk_target.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetStalkTargetCollection on Isar {
-  IsarCollection<StalkTarget> get stalkTargets => this.collection();
+extension GetUserCollection on Isar {
+  IsarCollection<User> get users => this.collection();
 }
 
-const StalkTargetSchema = CollectionSchema(
-  name: r'StalkTarget',
-  id: -5723879998545436765,
+const UserSchema = CollectionSchema(
+  name: r'User',
+  id: -7838171048429979076,
   properties: {
-    r'lastLocationAccuracy': PropertySchema(
+    r'didAttemptDownload': PropertySchema(
       id: 0,
+      name: r'didAttemptDownload',
+      type: IsarType.bool,
+    ),
+    r'hasLocalIcon': PropertySchema(
+      id: 1,
+      name: r'hasLocalIcon',
+      type: IsarType.bool,
+    ),
+    r'lastLocationAccuracy': PropertySchema(
+      id: 2,
       name: r'lastLocationAccuracy',
       type: IsarType.double,
     ),
     r'lastLocationLatitude': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'lastLocationLatitude',
       type: IsarType.double,
     ),
     r'lastLocationLongitude': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'lastLocationLongitude',
       type: IsarType.double,
     ),
     r'lastLocationTimestamp': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'lastLocationTimestamp',
       type: IsarType.dateTime,
     ),
     r'name': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'name',
       type: IsarType.string,
     ),
-    r'profilePictureUrl': PropertySchema(
-      id: 5,
-      name: r'profilePictureUrl',
-      type: IsarType.string,
-    ),
     r'token': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'token',
       type: IsarType.string,
     )
   },
-  estimateSize: _stalkTargetEstimateSize,
-  serialize: _stalkTargetSerialize,
-  deserialize: _stalkTargetDeserialize,
-  deserializeProp: _stalkTargetDeserializeProp,
+  estimateSize: _userEstimateSize,
+  serialize: _userSerialize,
+  deserialize: _userDeserialize,
+  deserializeProp: _userDeserializeProp,
   idName: r'id',
   indexes: {
     r'name': IndexSchema(
@@ -84,43 +89,24 @@ const StalkTargetSchema = CollectionSchema(
           caseSensitive: true,
         )
       ],
-    ),
-    r'profilePictureUrl': IndexSchema(
-      id: 2981216276836067500,
-      name: r'profilePictureUrl',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'profilePictureUrl',
-          type: IndexType.value,
-          caseSensitive: true,
-        )
-      ],
     )
   },
   links: {},
   embeddedSchemas: {},
-  getId: _stalkTargetGetId,
-  getLinks: _stalkTargetGetLinks,
-  attach: _stalkTargetAttach,
+  getId: _userGetId,
+  getLinks: _userGetLinks,
+  attach: _userAttach,
   version: '3.1.0+1',
 );
 
-int _stalkTargetEstimateSize(
-  StalkTarget object,
+int _userEstimateSize(
+  User object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
   {
     final value = object.name;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.profilePictureUrl;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
     }
@@ -134,40 +120,42 @@ int _stalkTargetEstimateSize(
   return bytesCount;
 }
 
-void _stalkTargetSerialize(
-  StalkTarget object,
+void _userSerialize(
+  User object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDouble(offsets[0], object.lastLocationAccuracy);
-  writer.writeDouble(offsets[1], object.lastLocationLatitude);
-  writer.writeDouble(offsets[2], object.lastLocationLongitude);
-  writer.writeDateTime(offsets[3], object.lastLocationTimestamp);
-  writer.writeString(offsets[4], object.name);
-  writer.writeString(offsets[5], object.profilePictureUrl);
-  writer.writeString(offsets[6], object.token);
+  writer.writeBool(offsets[0], object.didAttemptDownload);
+  writer.writeBool(offsets[1], object.hasLocalIcon);
+  writer.writeDouble(offsets[2], object.lastLocationAccuracy);
+  writer.writeDouble(offsets[3], object.lastLocationLatitude);
+  writer.writeDouble(offsets[4], object.lastLocationLongitude);
+  writer.writeDateTime(offsets[5], object.lastLocationTimestamp);
+  writer.writeString(offsets[6], object.name);
+  writer.writeString(offsets[7], object.token);
 }
 
-StalkTarget _stalkTargetDeserialize(
+User _userDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = StalkTarget();
+  final object = User();
+  object.didAttemptDownload = reader.readBoolOrNull(offsets[0]);
+  object.hasLocalIcon = reader.readBoolOrNull(offsets[1]);
   object.id = id;
-  object.lastLocationAccuracy = reader.readDoubleOrNull(offsets[0]);
-  object.lastLocationLatitude = reader.readDoubleOrNull(offsets[1]);
-  object.lastLocationLongitude = reader.readDoubleOrNull(offsets[2]);
-  object.lastLocationTimestamp = reader.readDateTimeOrNull(offsets[3]);
-  object.name = reader.readStringOrNull(offsets[4]);
-  object.profilePictureUrl = reader.readStringOrNull(offsets[5]);
-  object.token = reader.readStringOrNull(offsets[6]);
+  object.lastLocationAccuracy = reader.readDoubleOrNull(offsets[2]);
+  object.lastLocationLatitude = reader.readDoubleOrNull(offsets[3]);
+  object.lastLocationLongitude = reader.readDoubleOrNull(offsets[4]);
+  object.lastLocationTimestamp = reader.readDateTimeOrNull(offsets[5]);
+  object.name = reader.readStringOrNull(offsets[6]);
+  object.token = reader.readStringOrNull(offsets[7]);
   return object;
 }
 
-P _stalkTargetDeserializeProp<P>(
+P _userDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -175,46 +163,46 @@ P _stalkTargetDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 1:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 2:
       return (reader.readDoubleOrNull(offset)) as P;
     case 3:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 5:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset)) as P;
+    case 7:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Id _stalkTargetGetId(StalkTarget object) {
+Id _userGetId(User object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _stalkTargetGetLinks(StalkTarget object) {
+List<IsarLinkBase<dynamic>> _userGetLinks(User object) {
   return [];
 }
 
-void _stalkTargetAttach(
-    IsarCollection<dynamic> col, Id id, StalkTarget object) {
+void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
   object.id = id;
 }
 
-extension StalkTargetQueryWhereSort
-    on QueryBuilder<StalkTarget, StalkTarget, QWhere> {
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhere> anyId() {
+extension UserQueryWhereSort on QueryBuilder<User, User, QWhere> {
+  QueryBuilder<User, User, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhere> anyName() {
+  QueryBuilder<User, User, QAfterWhere> anyName() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'name'),
@@ -222,26 +210,17 @@ extension StalkTargetQueryWhereSort
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhere> anyToken() {
+  QueryBuilder<User, User, QAfterWhere> anyToken() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'token'),
       );
     });
   }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhere> anyProfilePictureUrl() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'profilePictureUrl'),
-      );
-    });
-  }
 }
 
-extension StalkTargetQueryWhere
-    on QueryBuilder<StalkTarget, StalkTarget, QWhereClause> {
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> idEqualTo(Id id) {
+extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
+  QueryBuilder<User, User, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -250,8 +229,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<User, User, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -273,7 +251,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<User, User, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -282,7 +260,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<User, User, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -291,7 +269,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> idBetween(
+  QueryBuilder<User, User, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -307,7 +285,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameIsNull() {
+  QueryBuilder<User, User, QAfterWhereClause> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'name',
@@ -316,7 +294,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameIsNotNull() {
+  QueryBuilder<User, User, QAfterWhereClause> nameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
         indexName: r'name',
@@ -327,8 +305,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameEqualTo(
-      String? name) {
+  QueryBuilder<User, User, QAfterWhereClause> nameEqualTo(String? name) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'name',
@@ -337,8 +314,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameNotEqualTo(
-      String? name) {
+  QueryBuilder<User, User, QAfterWhereClause> nameNotEqualTo(String? name) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -372,7 +348,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameGreaterThan(
+  QueryBuilder<User, User, QAfterWhereClause> nameGreaterThan(
     String? name, {
     bool include = false,
   }) {
@@ -386,7 +362,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameLessThan(
+  QueryBuilder<User, User, QAfterWhereClause> nameLessThan(
     String? name, {
     bool include = false,
   }) {
@@ -400,7 +376,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameBetween(
+  QueryBuilder<User, User, QAfterWhereClause> nameBetween(
     String? lowerName,
     String? upperName, {
     bool includeLower = true,
@@ -417,7 +393,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameStartsWith(
+  QueryBuilder<User, User, QAfterWhereClause> nameStartsWith(
       String NamePrefix) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
@@ -428,7 +404,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameIsEmpty() {
+  QueryBuilder<User, User, QAfterWhereClause> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'name',
@@ -437,7 +413,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> nameIsNotEmpty() {
+  QueryBuilder<User, User, QAfterWhereClause> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -463,7 +439,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenIsNull() {
+  QueryBuilder<User, User, QAfterWhereClause> tokenIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'token',
@@ -472,7 +448,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenIsNotNull() {
+  QueryBuilder<User, User, QAfterWhereClause> tokenIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
         indexName: r'token',
@@ -483,8 +459,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenEqualTo(
-      String? token) {
+  QueryBuilder<User, User, QAfterWhereClause> tokenEqualTo(String? token) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'token',
@@ -493,8 +468,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenNotEqualTo(
-      String? token) {
+  QueryBuilder<User, User, QAfterWhereClause> tokenNotEqualTo(String? token) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -528,7 +502,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenGreaterThan(
+  QueryBuilder<User, User, QAfterWhereClause> tokenGreaterThan(
     String? token, {
     bool include = false,
   }) {
@@ -542,7 +516,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenLessThan(
+  QueryBuilder<User, User, QAfterWhereClause> tokenLessThan(
     String? token, {
     bool include = false,
   }) {
@@ -556,7 +530,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenBetween(
+  QueryBuilder<User, User, QAfterWhereClause> tokenBetween(
     String? lowerToken,
     String? upperToken, {
     bool includeLower = true,
@@ -573,7 +547,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenStartsWith(
+  QueryBuilder<User, User, QAfterWhereClause> tokenStartsWith(
       String TokenPrefix) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
@@ -584,7 +558,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenIsEmpty() {
+  QueryBuilder<User, User, QAfterWhereClause> tokenIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'token',
@@ -593,7 +567,7 @@ extension StalkTargetQueryWhere
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause> tokenIsNotEmpty() {
+  QueryBuilder<User, User, QAfterWhereClause> tokenIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -613,169 +587,6 @@ extension StalkTargetQueryWhere
             ))
             .addWhereClause(IndexWhereClause.lessThan(
               indexName: r'token',
-              upper: [''],
-            ));
-      }
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'profilePictureUrl',
-        value: [null],
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'profilePictureUrl',
-        lower: [null],
-        includeLower: false,
-        upper: [],
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlEqualTo(String? profilePictureUrl) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'profilePictureUrl',
-        value: [profilePictureUrl],
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlNotEqualTo(String? profilePictureUrl) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'profilePictureUrl',
-              lower: [],
-              upper: [profilePictureUrl],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'profilePictureUrl',
-              lower: [profilePictureUrl],
-              includeLower: false,
-              upper: [],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'profilePictureUrl',
-              lower: [profilePictureUrl],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'profilePictureUrl',
-              lower: [],
-              upper: [profilePictureUrl],
-              includeUpper: false,
-            ));
-      }
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlGreaterThan(
-    String? profilePictureUrl, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'profilePictureUrl',
-        lower: [profilePictureUrl],
-        includeLower: include,
-        upper: [],
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlLessThan(
-    String? profilePictureUrl, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'profilePictureUrl',
-        lower: [],
-        upper: [profilePictureUrl],
-        includeUpper: include,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlBetween(
-    String? lowerProfilePictureUrl,
-    String? upperProfilePictureUrl, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'profilePictureUrl',
-        lower: [lowerProfilePictureUrl],
-        includeLower: includeLower,
-        upper: [upperProfilePictureUrl],
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlStartsWith(String ProfilePictureUrlPrefix) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'profilePictureUrl',
-        lower: [ProfilePictureUrlPrefix],
-        upper: ['$ProfilePictureUrlPrefix\u{FFFFF}'],
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'profilePictureUrl',
-        value: [''],
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterWhereClause>
-      profilePictureUrlIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.lessThan(
-              indexName: r'profilePictureUrl',
-              upper: [''],
-            ))
-            .addWhereClause(IndexWhereClause.greaterThan(
-              indexName: r'profilePictureUrl',
-              lower: [''],
-            ));
-      } else {
-        return query
-            .addWhereClause(IndexWhereClause.greaterThan(
-              indexName: r'profilePictureUrl',
-              lower: [''],
-            ))
-            .addWhereClause(IndexWhereClause.lessThan(
-              indexName: r'profilePictureUrl',
               upper: [''],
             ));
       }
@@ -783,10 +594,61 @@ extension StalkTargetQueryWhere
   }
 }
 
-extension StalkTargetQueryFilter
-    on QueryBuilder<StalkTarget, StalkTarget, QFilterCondition> {
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> idEqualTo(
-      Id value) {
+extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
+  QueryBuilder<User, User, QAfterFilterCondition> didAttemptDownloadIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'didAttemptDownload',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition>
+      didAttemptDownloadIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'didAttemptDownload',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> didAttemptDownloadEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'didAttemptDownload',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> hasLocalIconIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'hasLocalIcon',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> hasLocalIconIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'hasLocalIcon',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> hasLocalIconEqualTo(
+      bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hasLocalIcon',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -795,7 +657,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<User, User, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -808,7 +670,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> idLessThan(
+  QueryBuilder<User, User, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -821,7 +683,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> idBetween(
+  QueryBuilder<User, User, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -838,8 +700,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationAccuracyIsNull() {
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationAccuracyIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'lastLocationAccuracy',
@@ -847,7 +708,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationAccuracyIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -856,8 +717,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationAccuracyEqualTo(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationAccuracyEqualTo(
     double? value, {
     double epsilon = Query.epsilon,
   }) {
@@ -870,7 +730,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationAccuracyGreaterThan(
     double? value, {
     bool include = false,
@@ -886,8 +746,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationAccuracyLessThan(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationAccuracyLessThan(
     double? value, {
     bool include = false,
     double epsilon = Query.epsilon,
@@ -902,8 +761,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationAccuracyBetween(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationAccuracyBetween(
     double? lower,
     double? upper, {
     bool includeLower = true,
@@ -922,8 +780,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationLatitudeIsNull() {
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationLatitudeIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'lastLocationLatitude',
@@ -931,7 +788,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationLatitudeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -940,8 +797,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationLatitudeEqualTo(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationLatitudeEqualTo(
     double? value, {
     double epsilon = Query.epsilon,
   }) {
@@ -954,7 +810,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationLatitudeGreaterThan(
     double? value, {
     bool include = false,
@@ -970,8 +826,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationLatitudeLessThan(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationLatitudeLessThan(
     double? value, {
     bool include = false,
     double epsilon = Query.epsilon,
@@ -986,8 +841,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationLatitudeBetween(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationLatitudeBetween(
     double? lower,
     double? upper, {
     bool includeLower = true,
@@ -1006,7 +860,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationLongitudeIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1015,7 +869,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationLongitudeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -1024,8 +878,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationLongitudeEqualTo(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationLongitudeEqualTo(
     double? value, {
     double epsilon = Query.epsilon,
   }) {
@@ -1038,7 +891,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationLongitudeGreaterThan(
     double? value, {
     bool include = false,
@@ -1054,8 +907,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationLongitudeLessThan(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationLongitudeLessThan(
     double? value, {
     bool include = false,
     double epsilon = Query.epsilon,
@@ -1070,8 +922,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationLongitudeBetween(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationLongitudeBetween(
     double? lower,
     double? upper, {
     bool includeLower = true,
@@ -1090,7 +941,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationTimestampIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1099,7 +950,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationTimestampIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -1108,8 +959,8 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationTimestampEqualTo(DateTime? value) {
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationTimestampEqualTo(
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'lastLocationTimestamp',
@@ -1118,7 +969,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
+  QueryBuilder<User, User, QAfterFilterCondition>
       lastLocationTimestampGreaterThan(
     DateTime? value, {
     bool include = false,
@@ -1132,8 +983,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationTimestampLessThan(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationTimestampLessThan(
     DateTime? value, {
     bool include = false,
   }) {
@@ -1146,8 +996,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      lastLocationTimestampBetween(
+  QueryBuilder<User, User, QAfterFilterCondition> lastLocationTimestampBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
@@ -1164,7 +1013,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameIsNull() {
+  QueryBuilder<User, User, QAfterFilterCondition> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'name',
@@ -1172,8 +1021,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      nameIsNotNull() {
+  QueryBuilder<User, User, QAfterFilterCondition> nameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'name',
@@ -1181,7 +1029,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameEqualTo(
+  QueryBuilder<User, User, QAfterFilterCondition> nameEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1194,7 +1042,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameGreaterThan(
+  QueryBuilder<User, User, QAfterFilterCondition> nameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1209,7 +1057,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameLessThan(
+  QueryBuilder<User, User, QAfterFilterCondition> nameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1224,7 +1072,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameBetween(
+  QueryBuilder<User, User, QAfterFilterCondition> nameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1243,7 +1091,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameStartsWith(
+  QueryBuilder<User, User, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1256,7 +1104,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameEndsWith(
+  QueryBuilder<User, User, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1269,8 +1117,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameContains(
-      String value,
+  QueryBuilder<User, User, QAfterFilterCondition> nameContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -1281,8 +1128,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameMatches(
-      String pattern,
+  QueryBuilder<User, User, QAfterFilterCondition> nameMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -1293,7 +1139,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> nameIsEmpty() {
+  QueryBuilder<User, User, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'name',
@@ -1302,8 +1148,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      nameIsNotEmpty() {
+  QueryBuilder<User, User, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'name',
@@ -1312,161 +1157,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'profilePictureUrl',
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'profilePictureUrl',
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'profilePictureUrl',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'profilePictureUrl',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'profilePictureUrl',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'profilePictureUrl',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'profilePictureUrl',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'profilePictureUrl',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'profilePictureUrl',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'profilePictureUrl',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'profilePictureUrl',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      profilePictureUrlIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'profilePictureUrl',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenIsNull() {
+  QueryBuilder<User, User, QAfterFilterCondition> tokenIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'token',
@@ -1474,8 +1165,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      tokenIsNotNull() {
+  QueryBuilder<User, User, QAfterFilterCondition> tokenIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'token',
@@ -1483,7 +1173,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenEqualTo(
+  QueryBuilder<User, User, QAfterFilterCondition> tokenEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1496,8 +1186,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      tokenGreaterThan(
+  QueryBuilder<User, User, QAfterFilterCondition> tokenGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1512,7 +1201,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenLessThan(
+  QueryBuilder<User, User, QAfterFilterCondition> tokenLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1527,7 +1216,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenBetween(
+  QueryBuilder<User, User, QAfterFilterCondition> tokenBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1546,7 +1235,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenStartsWith(
+  QueryBuilder<User, User, QAfterFilterCondition> tokenStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1559,7 +1248,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenEndsWith(
+  QueryBuilder<User, User, QAfterFilterCondition> tokenEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1572,8 +1261,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenContains(
-      String value,
+  QueryBuilder<User, User, QAfterFilterCondition> tokenContains(String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -1584,8 +1272,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenMatches(
-      String pattern,
+  QueryBuilder<User, User, QAfterFilterCondition> tokenMatches(String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -1596,7 +1283,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition> tokenIsEmpty() {
+  QueryBuilder<User, User, QAfterFilterCondition> tokenIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'token',
@@ -1605,8 +1292,7 @@ extension StalkTargetQueryFilter
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterFilterCondition>
-      tokenIsNotEmpty() {
+  QueryBuilder<User, User, QAfterFilterCondition> tokenIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'token',
@@ -1616,264 +1302,263 @@ extension StalkTargetQueryFilter
   }
 }
 
-extension StalkTargetQueryObject
-    on QueryBuilder<StalkTarget, StalkTarget, QFilterCondition> {}
+extension UserQueryObject on QueryBuilder<User, User, QFilterCondition> {}
 
-extension StalkTargetQueryLinks
-    on QueryBuilder<StalkTarget, StalkTarget, QFilterCondition> {}
+extension UserQueryLinks on QueryBuilder<User, User, QFilterCondition> {}
 
-extension StalkTargetQuerySortBy
-    on QueryBuilder<StalkTarget, StalkTarget, QSortBy> {
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationAccuracy() {
+extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
+  QueryBuilder<User, User, QAfterSortBy> sortByDidAttemptDownload() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'didAttemptDownload', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByDidAttemptDownloadDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'didAttemptDownload', Sort.desc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByHasLocalIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasLocalIcon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByHasLocalIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasLocalIcon', Sort.desc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationAccuracy() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationAccuracy', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationAccuracyDesc() {
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationAccuracyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationAccuracy', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationLatitude() {
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationLatitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLatitude', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationLatitudeDesc() {
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationLatitudeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLatitude', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationLongitude() {
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationLongitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLongitude', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationLongitudeDesc() {
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationLongitudeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLongitude', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationTimestamp() {
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationTimestamp() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationTimestamp', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByLastLocationTimestampDesc() {
+  QueryBuilder<User, User, QAfterSortBy> sortByLastLocationTimestampDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationTimestamp', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> sortByName() {
+  QueryBuilder<User, User, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> sortByNameDesc() {
+  QueryBuilder<User, User, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByProfilePictureUrl() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profilePictureUrl', Sort.asc);
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      sortByProfilePictureUrlDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profilePictureUrl', Sort.desc);
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> sortByToken() {
+  QueryBuilder<User, User, QAfterSortBy> sortByToken() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'token', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> sortByTokenDesc() {
+  QueryBuilder<User, User, QAfterSortBy> sortByTokenDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'token', Sort.desc);
     });
   }
 }
 
-extension StalkTargetQuerySortThenBy
-    on QueryBuilder<StalkTarget, StalkTarget, QSortThenBy> {
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> thenById() {
+extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
+  QueryBuilder<User, User, QAfterSortBy> thenByDidAttemptDownload() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'didAttemptDownload', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByDidAttemptDownloadDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'didAttemptDownload', Sort.desc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByHasLocalIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasLocalIcon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByHasLocalIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hasLocalIcon', Sort.desc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<User, User, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationAccuracy() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationAccuracy() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationAccuracy', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationAccuracyDesc() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationAccuracyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationAccuracy', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationLatitude() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationLatitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLatitude', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationLatitudeDesc() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationLatitudeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLatitude', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationLongitude() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationLongitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLongitude', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationLongitudeDesc() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationLongitudeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationLongitude', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationTimestamp() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationTimestamp() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationTimestamp', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByLastLocationTimestampDesc() {
+  QueryBuilder<User, User, QAfterSortBy> thenByLastLocationTimestampDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationTimestamp', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> thenByName() {
+  QueryBuilder<User, User, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> thenByNameDesc() {
+  QueryBuilder<User, User, QAfterSortBy> thenByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByProfilePictureUrl() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profilePictureUrl', Sort.asc);
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy>
-      thenByProfilePictureUrlDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'profilePictureUrl', Sort.desc);
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> thenByToken() {
+  QueryBuilder<User, User, QAfterSortBy> thenByToken() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'token', Sort.asc);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QAfterSortBy> thenByTokenDesc() {
+  QueryBuilder<User, User, QAfterSortBy> thenByTokenDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'token', Sort.desc);
     });
   }
 }
 
-extension StalkTargetQueryWhereDistinct
-    on QueryBuilder<StalkTarget, StalkTarget, QDistinct> {
-  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
-      distinctByLastLocationAccuracy() {
+extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
+  QueryBuilder<User, User, QDistinct> distinctByDidAttemptDownload() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'didAttemptDownload');
+    });
+  }
+
+  QueryBuilder<User, User, QDistinct> distinctByHasLocalIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hasLocalIcon');
+    });
+  }
+
+  QueryBuilder<User, User, QDistinct> distinctByLastLocationAccuracy() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastLocationAccuracy');
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
-      distinctByLastLocationLatitude() {
+  QueryBuilder<User, User, QDistinct> distinctByLastLocationLatitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastLocationLatitude');
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
-      distinctByLastLocationLongitude() {
+  QueryBuilder<User, User, QDistinct> distinctByLastLocationLongitude() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastLocationLongitude');
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QDistinct>
-      distinctByLastLocationTimestamp() {
+  QueryBuilder<User, User, QDistinct> distinctByLastLocationTimestamp() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastLocationTimestamp');
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QDistinct> distinctByName(
+  QueryBuilder<User, User, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<StalkTarget, StalkTarget, QDistinct> distinctByProfilePictureUrl(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'profilePictureUrl',
-          caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<StalkTarget, StalkTarget, QDistinct> distinctByToken(
+  QueryBuilder<User, User, QDistinct> distinctByToken(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'token', caseSensitive: caseSensitive);
@@ -1881,56 +1566,58 @@ extension StalkTargetQueryWhereDistinct
   }
 }
 
-extension StalkTargetQueryProperty
-    on QueryBuilder<StalkTarget, StalkTarget, QQueryProperty> {
-  QueryBuilder<StalkTarget, int, QQueryOperations> idProperty() {
+extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
+  QueryBuilder<User, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<StalkTarget, double?, QQueryOperations>
-      lastLocationAccuracyProperty() {
+  QueryBuilder<User, bool?, QQueryOperations> didAttemptDownloadProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'didAttemptDownload');
+    });
+  }
+
+  QueryBuilder<User, bool?, QQueryOperations> hasLocalIconProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hasLocalIcon');
+    });
+  }
+
+  QueryBuilder<User, double?, QQueryOperations> lastLocationAccuracyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastLocationAccuracy');
     });
   }
 
-  QueryBuilder<StalkTarget, double?, QQueryOperations>
-      lastLocationLatitudeProperty() {
+  QueryBuilder<User, double?, QQueryOperations> lastLocationLatitudeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastLocationLatitude');
     });
   }
 
-  QueryBuilder<StalkTarget, double?, QQueryOperations>
+  QueryBuilder<User, double?, QQueryOperations>
       lastLocationLongitudeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastLocationLongitude');
     });
   }
 
-  QueryBuilder<StalkTarget, DateTime?, QQueryOperations>
+  QueryBuilder<User, DateTime?, QQueryOperations>
       lastLocationTimestampProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastLocationTimestamp');
     });
   }
 
-  QueryBuilder<StalkTarget, String?, QQueryOperations> nameProperty() {
+  QueryBuilder<User, String?, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
     });
   }
 
-  QueryBuilder<StalkTarget, String?, QQueryOperations>
-      profilePictureUrlProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'profilePictureUrl');
-    });
-  }
-
-  QueryBuilder<StalkTarget, String?, QQueryOperations> tokenProperty() {
+  QueryBuilder<User, String?, QQueryOperations> tokenProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'token');
     });

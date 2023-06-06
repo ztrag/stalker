@@ -1,13 +1,13 @@
 import 'package:flutter/widgets.dart';
-import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/domain/user.dart';
 import 'package:stalker/stalk/stalk_machine.dart';
 
 class StalkMachineWidget extends StatefulWidget {
-  final StalkTarget stalkTarget;
+  final User target;
   final Widget child;
 
   const StalkMachineWidget(
-      {Key? key, required this.stalkTarget, required this.child})
+      {Key? key, required this.target, required this.child})
       : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class _StalkMachineWidgetState extends State<StalkMachineWidget> {
   void initState() {
     super.initState();
 
-    stalkMachine = StalkMachine(widget.stalkTarget);
+    stalkMachine = StalkMachine(widget.target);
     stalkMachine.stalk();
   }
 

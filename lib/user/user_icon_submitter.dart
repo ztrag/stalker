@@ -1,6 +1,6 @@
 import 'dart:io';
 
-class ProfilePictureSubmitter {
+class UserIconSubmitter {
   Future<void> submitFile(File file) async {
     print('submit file $file');
 

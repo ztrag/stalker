@@ -1,95 +1,84 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stalker/db/db.dart';
-import 'package:stalker/domain/stalk_target.dart';
-import 'package:stalker/profile/profile_picture_provider.dart';
+import 'package:stalker/domain/user.dart';
+import 'package:stalker/live/live_data.dart';
 import 'package:stalker/stalk/stalk_machine_widget.dart';
+import 'package:stalker/user/user_icon_provider.dart';
 
 class MapPage extends StatefulWidget {
-  final StalkTarget stalkTarget;
+  final User user;
 
-  const MapPage({Key? key, required this.stalkTarget}) : super(key: key);
+  const MapPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<MapPage> createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  late StreamSubscription<StalkTarget?> targetDbSubscription;
-  StalkTarget? updatedTarget;
+  late LiveData<User> liveUser = LiveData(widget.user);
   Uint8List? targetIconBytes;
 
   @override
   void initState() {
     super.initState();
     _monitorTarget();
-    _fechTargetIcon();
+    _fetchTargetIcon();
   }
 
   @override
   void dispose() {
-    targetDbSubscription.cancel();
+    liveUser.dispose();
     super.dispose();
-  }
-
-  void _fechTargetIcon() async {
-    targetIconBytes = await ProfilePictureFetcher().fetch(
-      widget.stalkTarget.profilePictureUrl!,
-    );
-    setState(() {});
   }
 
   void _monitorTarget() async {
     final db = await Db.db;
-    targetDbSubscription =
-        db.stalkTargets.watchObject(widget.stalkTarget.id).listen((event) {
-      setState(() {
-        updatedTarget = event;
-      });
-    });
+    liveUser.inCollection(db.users);
+  }
+
+  void _fetchTargetIcon() async {
+    targetIconBytes = await UserIconProvider().fetch(widget.user);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final t = updatedTarget ?? widget.stalkTarget;
-    return StalkMachineWidget(
-      stalkTarget: widget.stalkTarget,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('stalking ${widget.stalkTarget.name ?? ''}'),
-        ),
-        body: Platform.isIOS
-            ? Container()
-            : GoogleMap(
-                markers: {
-                  if (targetIconBytes != null && _hasLocation(t))
-                    Marker(
-                      markerId: MarkerId('${widget.stalkTarget.id}'),
-                      position: LatLng(
-                        t.lastLocationLatitude!,
-                        t.lastLocationLongitude!,
+    return AnimatedBuilder(
+      animation: liveUser,
+      builder: (_, __) => StalkMachineWidget(
+        target: widget.user,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.user.displayName),
+          ),
+          body: Platform.isIOS
+              ? Container()
+              : GoogleMap(
+                  markers: {
+                    if (targetIconBytes != null && liveUser.value!.hasLocation)
+                      Marker(
+                        markerId: MarkerId('${widget.user.id}'),
+                        position: LatLng(
+                          liveUser.value!.lastLocationLatitude!,
+                          liveUser.value!.lastLocationLongitude!,
+                        ),
+                        icon: BitmapDescriptor.fromBytes(targetIconBytes!),
                       ),
-                      icon: BitmapDescriptor.fromBytes(targetIconBytes!),
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      liveUser.value?.lastLocationLatitude ?? 0,
+                      liveUser.value?.lastLocationLongitude ?? 0,
                     ),
-                },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                    t.lastLocationLatitude ?? 0,
-                    t.lastLocationLongitude ?? 0,
+                    zoom: 14,
                   ),
-                  zoom: 14,
                 ),
-              ),
+        ),
       ),
     );
-  }
-
-  bool _hasLocation(StalkTarget target) {
-    return target.lastLocationLongitude != null &&
-        target.lastLocationLatitude != null;
   }
 }

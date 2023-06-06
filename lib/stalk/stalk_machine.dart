@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:stalker/domain/stalk_target.dart';
+import 'package:stalker/domain/user.dart';
 import 'package:stalker/location/position_fetcher.dart';
 import 'package:stalker/stalk/stalk_protocol.dart';
 
@@ -15,7 +15,7 @@ enum StalkMachineAction {
 }
 
 class StalkMachine {
-  final StalkTarget target;
+  final User target;
   final ValueNotifier<Map<DateTime, StalkMachineAction>> history =
       ValueNotifier({});
   StreamSubscription<StalkMessage>? _messagesWatch;

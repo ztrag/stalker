@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:stalker/home/home_page.dart';
+import 'package:stalker/user/active_user.dart';
+import 'package:stalker/user/edit_active_user_page.dart';
+
+class StalkerApp extends StatelessWidget {
+  const StalkerApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'stalker',
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+      ),
+      home: _home,
+    );
+  }
+
+  Widget get _home {
+    return AnimatedBuilder(
+      animation: ActiveUser(),
+      builder: (_, __) {
+        if (!ActiveUser().hasLoaded) {
+          return Container();
+        }
+        return ActiveUser().value == null
+            ? const EditActiveUserPage()
+            : const HomePage();
+      },
+    );
+  }
+}
