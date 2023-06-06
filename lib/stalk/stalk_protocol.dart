@@ -144,14 +144,17 @@ class StalkProtocol {
   void _storeLocation(StalkMessage message) async {
     final positionData = jsonDecode(message.data['d'])['position'];
     final target = message.sender;
-    target.lastLocationLatitude = positionData['la'];
-    target.lastLocationLongitude = positionData['lo'];
-    target.lastLocationTimestamp =
-        DateTime.fromMillisecondsSinceEpoch(positionData['t']);
-    target.lastLocationAccuracy = positionData['a'];
 
     final db = await Db.db;
-    db.writeTxn(() => db.users.put(target));
+    db.writeTxn(() async {
+      final saved = await db.users.get(target.id);
+      saved!.lastLocationLatitude = positionData['la'];
+      saved.lastLocationLongitude = positionData['lo'];
+      saved.lastLocationTimestamp =
+          DateTime.fromMillisecondsSinceEpoch(positionData['t']);
+      saved.lastLocationAccuracy = positionData['a'];
+      return db.users.put(saved);
+    });
   }
 
   Map<String, dynamic>? _getMappedPosition(Position? position) {

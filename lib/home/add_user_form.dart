@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
@@ -54,5 +55,15 @@ class _AddUserFormState extends State<AddUserForm> {
     final db = await Db.db;
     await db.writeTxn(() => db.users.put(user));
     widget.onDone();
+
+    final nameRef = FirebaseStorage.instance.ref('${user.token.hashCode}-n');
+    final nameData = await nameRef.getData();
+    if (nameData != null) {
+      await db.writeTxn(() async {
+        final saved = await db.users.get(user.id);
+        saved!.name = String.fromCharCodes(nameData);
+        return db.users.put(saved);
+      });
+    }
   }
 }

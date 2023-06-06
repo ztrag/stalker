@@ -15,27 +15,36 @@ class UserIconWidget extends StatefulWidget {
 }
 
 class _UserIconWidgetState extends State<UserIconWidget> {
-  late final Future<Uint8List?> _imageFuture =
-      UserIconProvider().fetch(widget.user);
   Uint8List? _image;
 
   @override
   void initState() {
     super.initState();
-    _imageFuture.then(
-      (value) => setState(() {
-        _image = value;
-      }),
-    );
+    _fetch();
+    UserIconProvider().addListener(_fetch);
+  }
+
+  @override
+  void dispose() {
+    UserIconProvider().removeListener(_fetch);
+    super.dispose();
+  }
+
+  void _fetch() async {
+    _image = await UserIconProvider().fetch(widget.user);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: _image != null
-        ? Image.memory(_image!, errorBuilder: (c, _, __) => _errorWidget)
-        : _errorWidget);
+    return AnimatedBuilder(
+      animation: UserIconProvider(),
+      builder: (_, __) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _image != null
+              ? Image.memory(_image!, errorBuilder: (c, _, __) => _errorWidget)
+              : _errorWidget),
+    );
   }
 
   Widget get _errorWidget {
