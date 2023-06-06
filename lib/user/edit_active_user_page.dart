@@ -9,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/user/active_user.dart';
+import 'package:stalker/user/user_enabled_switch.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 import 'package:stalker/user/user_icon_widget.dart';
 
@@ -89,13 +90,21 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
               const SizedBox(height: 8),
               const Divider(),
               const SizedBox(height: 8),
-              ListTile(
-                title: const Text('Position'),
-                subtitle: Text(
-                  'Enabled users will be able to stalk me.',
-                  style: Theme.of(context).textTheme.bodySmall,
+              InkWell(
+                onTap: _toggleEnabled,
+                child: ListTile(
+                  title: const Text('Position'),
+                  subtitle: Text(
+                    'Enabled users will be able to stalk me.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  trailing: ActiveUser().value == null
+                      ? null
+                      : UserEnabledSwitch(
+                          user: editUser,
+                          onValueChanged: (v) => editUser.isEnabled = v,
+                        ),
                 ),
-                trailing: Switch(value: true, onChanged: (v) {}),
               ),
               const SizedBox(height: 8),
               InkWell(
@@ -173,5 +182,16 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
     final ref = FirebaseStorage.instance
         .ref('${ActiveUser().value!.token!.hashCode}-n');
     await ref.putString(name);
+  }
+
+  void _toggleEnabled([bool? v]) async {
+    if (ActiveUser().value == null) {
+      return;
+    }
+
+    editUser.isEnabled = v ?? !editUser.isEnabled;
+    setState(() {});
+
+    UserEnabledSwitch.toggleInDb(editUser, editUser.isEnabled);
   }
 }

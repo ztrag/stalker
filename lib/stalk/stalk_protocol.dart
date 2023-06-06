@@ -8,6 +8,7 @@ import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/location/position_fetcher.dart';
+import 'package:stalker/user/active_user.dart';
 
 enum StalkAction {
   stalkRequest(1),
@@ -64,10 +65,19 @@ class StalkProtocol {
     ));
   }
 
-  void _handleStalkMessage(StalkMessage message) {
+  void _handleStalkMessage(StalkMessage message) async {
     _messageStreamController.sink.add(message);
     switch (message.action) {
       case StalkAction.stalkRequest:
+        if (!message.sender.isEnabled) {
+          return;
+        }
+
+        await ActiveUser().load();
+        if (!ActiveUser().value!.isEnabled) {
+          return;
+        }
+
         sendMessage(message.sender, StalkAction.stalkRequestAck);
 
         listener() {

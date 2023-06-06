@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/map/map_page.dart';
+import 'package:stalker/user/user_enabled_switch.dart';
 import 'package:stalker/user/user_icon_widget.dart';
 
 class UserCard extends StatelessWidget {
@@ -62,7 +63,7 @@ class UserCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Switch(value: true, onChanged: (v) {}),
+                UserEnabledSwitch(user: user),
               ],
             ),
           ),

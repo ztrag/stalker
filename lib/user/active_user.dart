@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
@@ -5,6 +7,9 @@ import 'package:stalker/domain/user.dart';
 
 class ActiveUser extends ChangeNotifier {
   static ActiveUser instance = ActiveUser._();
+
+  final Completer _completer = Completer();
+
   User? value;
   bool hasLoaded = false;
 
@@ -20,6 +25,7 @@ class ActiveUser extends ChangeNotifier {
 
     value = await query.findFirst();
     hasLoaded = true;
+    _completer.complete();
     notifyListeners();
 
     query.watch().listen((event) {
@@ -27,4 +33,6 @@ class ActiveUser extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  Future<void> load() => _completer.future;
 }

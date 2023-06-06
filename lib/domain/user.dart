@@ -27,6 +27,8 @@ class User with HasId {
 
   double? lastLocationAccuracy;
 
+  bool isEnabled = true;
+
   @ignore
   Future<String?> get iconPath async {
     if (token == null) {

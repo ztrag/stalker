@@ -27,33 +27,38 @@ const UserSchema = CollectionSchema(
       name: r'hasLocalIcon',
       type: IsarType.bool,
     ),
-    r'lastLocationAccuracy': PropertySchema(
+    r'isEnabled': PropertySchema(
       id: 2,
+      name: r'isEnabled',
+      type: IsarType.bool,
+    ),
+    r'lastLocationAccuracy': PropertySchema(
+      id: 3,
       name: r'lastLocationAccuracy',
       type: IsarType.double,
     ),
     r'lastLocationLatitude': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'lastLocationLatitude',
       type: IsarType.double,
     ),
     r'lastLocationLongitude': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'lastLocationLongitude',
       type: IsarType.double,
     ),
     r'lastLocationTimestamp': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'lastLocationTimestamp',
       type: IsarType.dateTime,
     ),
     r'name': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'name',
       type: IsarType.string,
     ),
     r'token': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'token',
       type: IsarType.string,
     )
@@ -128,12 +133,13 @@ void _userSerialize(
 ) {
   writer.writeBool(offsets[0], object.didAttemptDownload);
   writer.writeBool(offsets[1], object.hasLocalIcon);
-  writer.writeDouble(offsets[2], object.lastLocationAccuracy);
-  writer.writeDouble(offsets[3], object.lastLocationLatitude);
-  writer.writeDouble(offsets[4], object.lastLocationLongitude);
-  writer.writeDateTime(offsets[5], object.lastLocationTimestamp);
-  writer.writeString(offsets[6], object.name);
-  writer.writeString(offsets[7], object.token);
+  writer.writeBool(offsets[2], object.isEnabled);
+  writer.writeDouble(offsets[3], object.lastLocationAccuracy);
+  writer.writeDouble(offsets[4], object.lastLocationLatitude);
+  writer.writeDouble(offsets[5], object.lastLocationLongitude);
+  writer.writeDateTime(offsets[6], object.lastLocationTimestamp);
+  writer.writeString(offsets[7], object.name);
+  writer.writeString(offsets[8], object.token);
 }
 
 User _userDeserialize(
@@ -146,12 +152,13 @@ User _userDeserialize(
   object.didAttemptDownload = reader.readBoolOrNull(offsets[0]);
   object.hasLocalIcon = reader.readBoolOrNull(offsets[1]);
   object.id = id;
-  object.lastLocationAccuracy = reader.readDoubleOrNull(offsets[2]);
-  object.lastLocationLatitude = reader.readDoubleOrNull(offsets[3]);
-  object.lastLocationLongitude = reader.readDoubleOrNull(offsets[4]);
-  object.lastLocationTimestamp = reader.readDateTimeOrNull(offsets[5]);
-  object.name = reader.readStringOrNull(offsets[6]);
-  object.token = reader.readStringOrNull(offsets[7]);
+  object.isEnabled = reader.readBool(offsets[2]);
+  object.lastLocationAccuracy = reader.readDoubleOrNull(offsets[3]);
+  object.lastLocationLatitude = reader.readDoubleOrNull(offsets[4]);
+  object.lastLocationLongitude = reader.readDoubleOrNull(offsets[5]);
+  object.lastLocationTimestamp = reader.readDateTimeOrNull(offsets[6]);
+  object.name = reader.readStringOrNull(offsets[7]);
+  object.token = reader.readStringOrNull(offsets[8]);
   return object;
 }
 
@@ -167,16 +174,18 @@ P _userDeserializeProp<P>(
     case 1:
       return (reader.readBoolOrNull(offset)) as P;
     case 2:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 3:
       return (reader.readDoubleOrNull(offset)) as P;
     case 4:
       return (reader.readDoubleOrNull(offset)) as P;
     case 5:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 6:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -696,6 +705,15 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> isEnabledEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isEnabled',
+        value: value,
       ));
     });
   }
@@ -1331,6 +1349,18 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
     });
   }
 
+  QueryBuilder<User, User, QAfterSortBy> sortByIsEnabled() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isEnabled', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByIsEnabledDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isEnabled', Sort.desc);
+    });
+  }
+
   QueryBuilder<User, User, QAfterSortBy> sortByLastLocationAccuracy() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationAccuracy', Sort.asc);
@@ -1441,6 +1471,18 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
     });
   }
 
+  QueryBuilder<User, User, QAfterSortBy> thenByIsEnabled() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isEnabled', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByIsEnabledDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isEnabled', Sort.desc);
+    });
+  }
+
   QueryBuilder<User, User, QAfterSortBy> thenByLastLocationAccuracy() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'lastLocationAccuracy', Sort.asc);
@@ -1527,6 +1569,12 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
     });
   }
 
+  QueryBuilder<User, User, QDistinct> distinctByIsEnabled() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isEnabled');
+    });
+  }
+
   QueryBuilder<User, User, QDistinct> distinctByLastLocationAccuracy() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastLocationAccuracy');
@@ -1582,6 +1630,12 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
   QueryBuilder<User, bool?, QQueryOperations> hasLocalIconProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'hasLocalIcon');
+    });
+  }
+
+  QueryBuilder<User, bool, QQueryOperations> isEnabledProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isEnabled');
     });
   }
 
