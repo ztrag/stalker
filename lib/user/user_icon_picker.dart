@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
-const int _kSize = 512;
+const int _kSize = 256;
 
 class UserIconPicker extends ValueNotifier<Uint8List?> {
   UserIconPicker([super.value]);
