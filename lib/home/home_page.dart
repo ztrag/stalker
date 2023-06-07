@@ -36,31 +36,53 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: Colors.transparent,
-                    image: const DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage('assets/images/right-eye2.jpg'),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4.0),
+                  child: Container(
+                    width: 40,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      color: Colors.transparent,
+                      // image: const DecorationImage(
+                      //   fit: BoxFit.fill,
+                      //   image: AssetImage('assets/images/eye-right.jpg'),
+                      // ),
+                    ),
+                    child: Row(
+                      children: [
+                        Image.asset('assets/images/eye-right.jpg'),
+                        Image.asset('assets/images/eye-left.jpg'),
+                      ],
                     ),
                   ),
                 ),
                 // const SizedBox(width: 2),
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4.0),
-                    color: Colors.transparent,
-                    image: const DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage('assets/images/left-eye.jpg'),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   width: 20,
+                //   height: 20,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(4.0),
+                //     color: Colors.transparent,
+                //     image: const DecorationImage(
+                //       fit: BoxFit.fill,
+                //       image: AssetImage('assets/images/eye-right.jpg'),
+                //     ),
+                //   ),
+                // ),
+                // // const SizedBox(width: 2),
+                // Container(
+                //   width: 20,
+                //   height: 20,
+                //   decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.circular(4.0),
+                //     color: Colors.transparent,
+                //     image: const DecorationImage(
+                //       fit: BoxFit.fill,
+                //       image: AssetImage('assets/images/left-eye.jpg'),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
