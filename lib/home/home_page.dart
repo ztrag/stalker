@@ -11,6 +11,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Widget? addUserForm;
+  bool _isShowingBg = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => setState(() => _isShowingBg = true));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +27,15 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                opacity: 0.15,
-                image: NetworkImage(
-                  'https://firebasestorage.googleapis.com/v0/b/stalker-a01a3.appspot.com/o/bg.webp?alt=media&token=dbec09fc-84e4-4dc3-b974-c976fd3da1ef',
+          AnimatedOpacity(
+            opacity: _isShowingBg ? 0.15 : 0.35,
+            duration: Duration(milliseconds: 750),
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/bg.webp'),
+                  fit: BoxFit.cover,
                 ),
-                fit: BoxFit.cover,
               ),
             ),
           ),
