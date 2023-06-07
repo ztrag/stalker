@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/location/position_fetcher.dart';
 import 'package:stalker/stalk/stalk_protocol.dart';
@@ -19,6 +17,10 @@ class StalkMachine {
   final ValueNotifier<Map<DateTime, StalkMachineAction>> history =
       ValueNotifier({});
   StreamSubscription<StalkMessage>? _messagesWatch;
+  final ValueNotifier<bool> isAvailable = ValueNotifier(true);
+  final ValueNotifier<bool> hasSent = ValueNotifier(false);
+  final ValueNotifier<bool> hasReceivedAck = ValueNotifier(false);
+  final ValueNotifier<bool> hasReceivedLocation = ValueNotifier(false);
 
   StalkMachine(this.target);
 
@@ -35,14 +37,17 @@ class StalkMachine {
         // FIXME: Other user is stalking me too.
         return;
       case StalkAction.stalkRequestAck:
+        hasReceivedAck.value = true;
         _addToHistory(StalkMachineAction.ackRequest);
         return;
       case StalkAction.locationShare:
+        hasReceivedLocation.value = true;
         return;
     }
   }
 
   void stalk() async {
+    _resetAvailability();
     _messagesWatch ??= StalkProtocol.messages.listen(_handleMessage);
     _addToHistory(StalkMachineAction.sendingRequest);
     final stalkRequestFuture =
@@ -57,6 +62,8 @@ class StalkMachine {
     if (!result) {
       throw 'FAIL';
     }
+
+    hasSent.value = true;
   }
 
   void ack() {
@@ -68,29 +75,11 @@ class StalkMachine {
     history.value = {...history.value, DateTime.now(): action};
   }
 
-  void sendPushMessage(String token, Map<String, dynamic> data) async {
-    try {
-      final x = await http.post(
-        Uri.parse('https://fcm.googleapis.com/fcm/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization':
-              'key=AAAAO_390dw:APA91bHmann0MjxGVuKX6NBXQgPQbXUX66i67Au7uOaCAkVBGwRGk0SRo6XyIuzcyPBLO3rXNx7qWJaH08B5E6fSaPB-JERvpevgK6cZPYis6Qbeb-1Uc8eAH4__PIjBnsPwlJXC6wC6',
-        },
-        body: jsonEncode(
-          <String, dynamic>{
-            'priority': 'high',
-            'data': data,
-            "to": token,
-          },
-        ),
-      );
-
-      _addToHistory(x.statusCode == 200
-          ? StalkMachineAction.sentRequest
-          : StalkMachineAction.failedRequest);
-    } catch (e) {
-      _addToHistory(StalkMachineAction.failedRequest);
-    }
+  void _resetAvailability() {
+    isAvailable.value = false;
+    hasSent.value = false;
+    hasReceivedAck.value = false;
+    hasReceivedLocation.value = false;
+    Future.delayed(const Duration(seconds: 10), () => isAvailable.value = true);
   }
 }
