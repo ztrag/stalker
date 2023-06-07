@@ -79,10 +79,13 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
                       onTap: userIconPicker.pick,
                       child: ValueListenableBuilder<Uint8List?>(
                         valueListenable: userIconPicker,
-                        builder: (_, __, ___) => UserIconWidget(
-                          user: editUser,
-                          errorWidget: const Icon(Icons.image_outlined),
-                          image: userIconPicker.value,
+                        builder: (_, __, ___) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: UserIconWidget(
+                            user: editUser,
+                            errorWidget: const Icon(Icons.image_outlined),
+                            image: userIconPicker.value,
+                          ),
                         ),
                       ),
                     ),

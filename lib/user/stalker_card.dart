@@ -34,7 +34,10 @@ class StalkerCard extends StatelessWidget {
                             builder: (c) => const EditActiveUserPage()),
                       );
                     },
-                    child: UserIconWidget(user: ActiveUser().value!),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: UserIconWidget(user: ActiveUser().value!),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),

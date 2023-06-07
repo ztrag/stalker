@@ -43,7 +43,10 @@ class UserCard extends StatelessWidget {
                         .map((e) =>
                             PopupMenuItem<String>(value: e, child: Text(e)))
                         .toList(),
-                    child: UserIconWidget(user: user),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: UserIconWidget(user: user),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),

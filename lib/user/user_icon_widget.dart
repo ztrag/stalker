@@ -50,17 +50,14 @@ class _UserIconWidgetState extends State<UserIconWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: AnimatedBuilder(
-        animation: UserIconProvider(),
-        builder: (_, __) => _image != null
-            ? Image.memory(
-                _image!,
-                errorBuilder: (_, __, ___) => _errorWidget,
-              )
-            : _errorWidget,
-      ),
+    return AnimatedBuilder(
+      animation: UserIconProvider(),
+      builder: (_, __) => _image != null
+          ? Image.memory(
+              _image!,
+              errorBuilder: (_, __, ___) => _errorWidget,
+            )
+          : _errorWidget,
     );
   }
 

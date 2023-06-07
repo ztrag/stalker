@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/live/live_data.dart';
+import 'package:stalker/map/map_styles.dart';
 import 'package:stalker/stalk/stalk_machine.dart';
+import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/user_icon_provider.dart';
+import 'package:stalker/user/user_icon_widget.dart';
 
 class MapPage extends StatefulWidget {
   final User user;
@@ -21,14 +25,15 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   late final StalkMachine stalkMachine = StalkMachine(widget.user);
   late LiveData<User> liveUser = LiveData(widget.user);
-  Uint8List? targetIconBytes;
-  bool _opacityLoaderPingPong = true;
+  final Map<Id, Uint8List> cachedImages = <Id, Uint8List>{};
+  bool opacityLoaderPingPong = true;
+  GoogleMapController? mapController;
 
   @override
   void initState() {
     super.initState();
     _monitorTarget();
-    _fetchTargetIcon();
+    _fetchIcons();
   }
 
   @override
@@ -43,9 +48,17 @@ class _MapPageState extends State<MapPage> {
     liveUser.inCollection(db.users);
   }
 
-  void _fetchTargetIcon() async {
-    targetIconBytes = await UserIconProvider().fetch(widget.user);
+  void _fetchIcons() async {
+    await _fetchIconForUser(ActiveUser().value!);
+    await _fetchIconForUser(widget.user);
     setState(() {});
+  }
+
+  Future<void> _fetchIconForUser(User user) async {
+    final result = await UserIconProvider().fetch(user);
+    if (result != null) {
+      cachedImages[user.id] = result;
+    }
   }
 
   @override
@@ -61,67 +74,95 @@ class _MapPageState extends State<MapPage> {
         body: Platform.isIOS
             ? Container()
             : GoogleMap(
-                markers: {
-                  if (targetIconBytes != null && liveUser.value!.hasLocation)
-                    Marker(
-                      markerId: MarkerId('${widget.user.id}'),
-                      position: LatLng(
-                        liveUser.value!.lastLocationLatitude!,
-                        liveUser.value!.lastLocationLongitude!,
-                      ),
-                      icon: BitmapDescriptor.fromBytes(targetIconBytes!),
-                    ),
+                onMapCreated: (controller) {
+                  mapController = controller;
+                  controller.setMapStyle(
+                      Theme.of(context).brightness == Brightness.dark
+                          ? kDarkMap
+                          : kLightMap);
                 },
+                markers: _getUsersForMarkers()
+                    .map((e) => Marker(
+                          markerId: MarkerId('${e.id}'),
+                          position: LatLng(
+                            e.lastLocationLatitude!,
+                            e.lastLocationLongitude!,
+                          ),
+                          anchor: const Offset(0.5, 0.5),
+                          icon: BitmapDescriptor.fromBytes(cachedImages[e.id]!),
+                        ))
+                    .toSet(),
                 zoomControlsEnabled: false,
-                mapType: MapType.satellite,
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                    liveUser.value?.lastLocationLatitude ?? 45.529203417794825,
-                    liveUser.value?.lastLocationLongitude ??
-                        -122.69094861252296,
-                  ),
+                  target: _latLngFromUser(liveUser.value ?? User()),
                   zoom: 16,
                 ),
               ),
-        // floatingActionButton: FloatingActionButton(
-        //     onPressed: onStalkRequested,
-        //     child: const Icon(Icons.remove_red_eye_outlined)),
-        floatingActionButton: ValueListenableBuilder(
-          valueListenable: stalkMachine.isAvailable,
-          builder: (_, isAvailable, ___) => AnimatedOpacity(
-            opacity: isAvailable
-                ? 1
-                : _opacityLoaderPingPong
-                    ? 0.5
-                    : 0.25,
-            onEnd: () {
-              if (!stalkMachine.isAvailable.value) {
-                setState(() {
-                  _opacityLoaderPingPong = !_opacityLoaderPingPong;
-                });
-              }
-            },
-            duration: isAvailable
-                ? const Duration(milliseconds: 250)
-                : const Duration(seconds: 1),
-            child: FloatingActionButton(
-              onPressed: () {
-                if (stalkMachine.isAvailable.value) {
-                  stalkMachine.stalk();
-                }
-              },
-              child: isAvailable
-                  ? const Icon(Icons.remove_red_eye_outlined)
-                  : AnimatedBuilder(
-                      animation: Listenable.merge([
-                        stalkMachine.hasSent,
-                        stalkMachine.hasReceivedAck,
-                        stalkMachine.hasReceivedLocation,
-                      ]),
-                      builder: (_, __) => _getStalkStateIcon(),
-                    ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Column(
+                  children: [widget.user, ActiveUser().value!]
+                      .map(
+                        (e) => IconButton(
+                          onPressed: () {
+                            mapController?.moveCamera(
+                                CameraUpdate.newLatLng(_latLngFromUser(e)));
+                          },
+                          icon: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: UserIconWidget(user: e),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
             ),
-          ),
+            const SizedBox(height: 4),
+            ValueListenableBuilder(
+              valueListenable: stalkMachine.isAvailable,
+              builder: (_, isAvailable, ___) => AnimatedOpacity(
+                opacity: isAvailable
+                    ? 1
+                    : opacityLoaderPingPong
+                        ? 0.5
+                        : 0.25,
+                onEnd: () {
+                  if (!stalkMachine.isAvailable.value) {
+                    setState(() {
+                      opacityLoaderPingPong = !opacityLoaderPingPong;
+                    });
+                  }
+                },
+                duration: isAvailable
+                    ? const Duration(milliseconds: 250)
+                    : const Duration(seconds: 1),
+                curve: Curves.easeInOut,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    if (stalkMachine.isAvailable.value) {
+                      stalkMachine.stalk();
+                    }
+                  },
+                  child: isAvailable
+                      ? const Icon(Icons.remove_red_eye_outlined)
+                      : AnimatedBuilder(
+                          animation: Listenable.merge([
+                            stalkMachine.hasSent,
+                            stalkMachine.hasReceivedAck,
+                            stalkMachine.hasReceivedLocation,
+                          ]),
+                          builder: (_, __) => _getStalkStateIcon(),
+                        ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -149,4 +190,20 @@ class _MapPageState extends State<MapPage> {
       ],
     );
   }
+
+  List<User> _getUsersForMarkers() {
+    final target = liveUser.value!;
+    final stalker = ActiveUser().value!;
+    return [
+      if (cachedImages[target.id] != null && target.hasLocation) target,
+      if (cachedImages[stalker.id] != null && stalker.hasLocation) stalker,
+    ];
+  }
+}
+
+LatLng _latLngFromUser(User user) {
+  return LatLng(
+    user.lastLocationLatitude ?? 45.529203417794825,
+    user.lastLocationLongitude ?? -122.69094861252296,
+  );
 }
