@@ -11,10 +11,22 @@ class StalkerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(4),
-        color: Theme.of(context).primaryColor,
+      padding: const EdgeInsets.only(bottom: 4),
+      child: AnimatedBuilder(
+        animation: ActiveUser(),
+        builder: (_, child) => Material(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(4),
+            bottomRight: Radius.circular(4),
+          ),
+          clipBehavior: Clip.antiAlias,
+          elevation: 2,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            color: _getCardColor(context),
+            child: child,
+          ),
+        ),
         child: InkWell(
           borderRadius: BorderRadius.circular(4),
           onTap: () {
@@ -49,14 +61,12 @@ class StalkerCard extends StatelessWidget {
                         animation: ActiveUser(),
                         builder: (_, __) => Text(
                           ActiveUser().value!.name!,
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.white),
+                          style: const TextStyle(fontSize: 12),
                         ),
                       ),
                       Text(
                         ActiveUser().value!.token!,
-                        style:
-                            const TextStyle(fontSize: 10, color: Colors.white),
+                        style: const TextStyle(fontSize: 10),
                         maxLines: 2,
                       ),
                     ],
@@ -70,5 +80,12 @@ class StalkerCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getCardColor(BuildContext context) {
+    final theme = Theme.of(context);
+    return ActiveUser().value!.isEnabled
+        ? theme.colorScheme.primaryContainer
+        : theme.colorScheme.surface;
   }
 }

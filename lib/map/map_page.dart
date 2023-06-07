@@ -149,9 +149,19 @@ class _MapPageState extends State<MapPage> {
                       stalkMachine.stalk();
                     }
                   },
-                  child: isAvailable
-                      ? const Icon(Icons.remove_red_eye_outlined)
-                      : AnimatedBuilder(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset('assets/images/eye-left-fuzz.png'),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 4,
+                        child: AnimatedBuilder(
                           animation: Listenable.merge([
                             stalkMachine.hasSent,
                             stalkMachine.hasReceivedAck,
@@ -159,6 +169,9 @@ class _MapPageState extends State<MapPage> {
                           ]),
                           builder: (_, __) => _getStalkStateIcon(),
                         ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -169,23 +182,26 @@ class _MapPageState extends State<MapPage> {
   }
 
   Widget _getStalkStateIcon() {
+    if (stalkMachine.history.value.isEmpty) {
+      return Container();
+    }
     if (!stalkMachine.hasSent.value) {
-      return const Icon(Icons.circle_outlined, size: 10);
+      return const Icon(Icons.circle_outlined, size: 3);
     }
     if (!stalkMachine.hasReceivedAck.value) {
-      return const Icon(Icons.circle, size: 10);
+      return const Icon(Icons.circle, size: 3);
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.circle, size: 10),
+        const Icon(Icons.circle, size: 3),
         const SizedBox(width: 2),
         Icon(
           stalkMachine.hasReceivedLocation.value
               ? Icons.circle
               : Icons.circle_outlined,
-          size: 10,
+          size: 4,
         ),
       ],
     );

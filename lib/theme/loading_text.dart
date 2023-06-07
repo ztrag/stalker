@@ -19,8 +19,7 @@ class LoadingText extends StatelessWidget {
       }).join(),
       overflow: TextOverflow.clip,
       textScaleFactor: 0.6,
-      style:
-          Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
+      style: Theme.of(context).textTheme.bodySmall!,
     );
   }
 }

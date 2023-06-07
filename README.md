@@ -8,19 +8,18 @@ Find someone.
 
 ### Icon + Splashscreen
 . Splashscreen same as home
-. Eye icon
-. 
 
 ### UserIcon
 . Color vs faded vs black-white
 . Refresh on resume
+. Location received alert
 
 ### Last seen
 . 2d ago etc
 . Refresh on resume
 
 ### Name
-1. Edit for other users
+. Edit for other users
 
 ### Chat
 . Chat Model / db.

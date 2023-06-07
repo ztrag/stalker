@@ -33,23 +33,19 @@ class _HomePageState extends State<HomePage> {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                ClipRRect(
+            padding: const EdgeInsets.all(12.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4.0),
+                color: Color.lerp(Colors.pink.shade900, Colors.black, 0.3),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(4.0),
-                  child: SizedBox(
-                    width: 40,
-                    height: 20,
-                    child: Row(
-                      children: [
-                        Image.asset('assets/images/eye-right.jpg'),
-                        Image.asset('assets/images/eye-left.jpg'),
-                      ],
-                    ),
-                  ),
+                  child: Image.asset('assets/images/eye-left-fuzz.png'),
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -66,7 +62,6 @@ class _HomePageState extends State<HomePage> {
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
-                        .copyWith(color: Colors.grey),
                   ),
                   const Expanded(child: LoadingText(length: 100)),
                 ],

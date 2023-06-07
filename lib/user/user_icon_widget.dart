@@ -52,13 +52,17 @@ class _UserIconWidgetState extends State<UserIconWidget> {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: UserIconProvider(),
-      builder: (_, __) => _image != null
-          ? Image.memory(
-              _image!,
-              errorBuilder: (_, __, ___) => _errorWidget,
-            )
-          : _errorWidget,
+      builder: (_, __) => _iconImage,
     );
+  }
+
+  Widget get _iconImage {
+    return _image != null
+        ? Image.memory(
+            _image!,
+            errorBuilder: (_, __, ___) => _errorWidget,
+          )
+        : _errorWidget;
   }
 
   Widget get _errorWidget {
