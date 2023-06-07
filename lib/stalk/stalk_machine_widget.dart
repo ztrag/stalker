@@ -15,13 +15,12 @@ class StalkMachineWidget extends StatefulWidget {
 }
 
 class _StalkMachineWidgetState extends State<StalkMachineWidget> {
-  late final StalkMachine stalkMachine;
+  late final StalkMachine stalkMachine = StalkMachine(widget.target);
 
   @override
   void initState() {
     super.initState();
 
-    stalkMachine = StalkMachine(widget.target);
     stalkMachine.stalk();
   }
 

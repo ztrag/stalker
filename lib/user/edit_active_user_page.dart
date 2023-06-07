@@ -4,12 +4,12 @@ import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/user_enabled_switch.dart';
+import 'package:stalker/user/user_icon_picker.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 import 'package:stalker/user/user_icon_widget.dart';
 
@@ -22,8 +22,8 @@ class EditActiveUserPage extends StatefulWidget {
 
 class _EditActiveUserPageState extends State<EditActiveUserPage> {
   final TextEditingController nameController = TextEditingController();
-  XFile? pickedImage;
-  Uint8List? pickedImageData;
+  final UserIconPicker userIconPicker = UserIconPicker();
+
   String? token;
   User editUser = ActiveUser().value ?? User();
 
@@ -36,6 +36,13 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
       editUser.didAttemptDownload = true;
     }
     nameController.text = editUser.name ?? '';
+  }
+
+  @override
+  void dispose() {
+    userIconPicker.dispose();
+    nameController.dispose();
+    super.dispose();
   }
 
   void _fetchToken() async {
@@ -69,13 +76,15 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
                     width: 80,
                     height: 80,
                     child: InkWell(
-                      onTap: _pickImage,
-                      child: pickedImageData == null
-                          ? UserIconWidget(
-                              user: editUser,
-                              errorWidget: const Icon(Icons.image_outlined),
-                            )
-                          : Image.memory(pickedImageData!),
+                      onTap: userIconPicker.pick,
+                      child: ValueListenableBuilder<Uint8List?>(
+                        valueListenable: userIconPicker,
+                        builder: (_, __, ___) => UserIconWidget(
+                          user: editUser,
+                          errorWidget: const Icon(Icons.image_outlined),
+                          image: userIconPicker.value,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -125,22 +134,6 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
     );
   }
 
-  void _pickImage() async {
-    final picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 200,
-      maxHeight: 200,
-    );
-    if (image == null) {
-      return;
-    }
-
-    pickedImage = image;
-    pickedImageData = await image.readAsBytes();
-    setState(() {});
-  }
-
   void _onEditDone() {
     _maybeSubmitName();
     _maybeSubmitImage();
@@ -149,21 +142,21 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
   }
 
   Future<void> _maybeSubmitImage() async {
-    if (pickedImage == null) {
+    final icon = userIconPicker.value;
+    if (icon == null) {
       return;
     }
-    final file = File(pickedImage!.path);
-    final saved = await file.rename((await editUser.iconPath)!);
 
+    final filepath = await editUser.iconPath;
+    final saved = await File(filepath!).writeAsBytes(icon);
     editUser.hasLocalIcon = true;
 
     final db = await Db.db;
     db.writeTxn(() => db.users.put(editUser));
 
-    UserIconProvider().store(editUser, pickedImageData!);
+    UserIconProvider().store(editUser, icon);
 
-    final ref =
-        FirebaseStorage.instance.ref('${ActiveUser().value!.token!.hashCode}');
+    final ref = FirebaseStorage.instance.ref('${editUser.token!.hashCode}');
     await ref.putFile(saved);
   }
 
