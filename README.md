@@ -6,7 +6,10 @@ Find someone.
 
 ## TODO
 
-###
+### Background/Notification
+. Test background fcm.
+
+### Art
 . Map Skull
 
 ### Icon + Splashscreen
@@ -14,11 +17,10 @@ Find someone.
 
 ### UserIcon
 . Color vs faded vs black-white
-. Refresh on resume
+. Refresh on resume + lifecycle
 
 ### Last seen
-. 2d ago etc
-. Refresh on resume
+. Refresh on resume + lifecycle
 
 ### Name
 . Edit for other users
@@ -30,7 +32,3 @@ Find someone.
 . ChatPage appBar -> Go to MagPage.
 . ChatPage chats -> Show chat history
 . HomePage -> Show last message.
-
-
-### Background/Notification
-. Test background fcm.

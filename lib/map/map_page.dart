@@ -14,6 +14,7 @@ import 'package:stalker/theme/loading_text.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 import 'package:stalker/user/user_icon_widget.dart';
+import 'package:stalker/user/user_time_since_last_location.dart';
 
 class MapPage extends StatefulWidget {
   final User user;
@@ -113,28 +114,34 @@ class _MapPageState extends State<MapPage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Column(
-                  children: [widget.user, ActiveUser().value!]
-                      .map(
-                        (e) => IconButton(
-                          onPressed: () {
-                            mapController?.moveCamera(
-                                CameraUpdate.newLatLng(_latLngFromUser(e)));
-                          },
-                          icon: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: Theme(
-                              data: ThemeData(
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .apply(fontSizeFactor: 0.5),
+                  children: [
+                    ...[widget.user, ActiveUser().value!]
+                        .map(
+                          (e) => IconButton(
+                            onPressed: () {
+                              mapController?.moveCamera(
+                                  CameraUpdate.newLatLng(_latLngFromUser(e)));
+                            },
+                            icon: SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: Theme(
+                                data: ThemeData(
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .apply(fontSizeFactor: 0.5),
+                                ),
+                                child: UserIconWidget(user: e),
                               ),
-                              child: UserIconWidget(user: e),
                             ),
                           ),
-                        ),
-                      )
-                      .toList(),
+                        )
+                        .toList(),
+                    UserTimeSinceLastLocation(
+                      user: widget.user,
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  ],
                 ),
               ),
             ),

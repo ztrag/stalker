@@ -4,6 +4,7 @@ import 'package:stalker/domain/user.dart';
 import 'package:stalker/map/map_page.dart';
 import 'package:stalker/user/user_enabled_switch.dart';
 import 'package:stalker/user/user_icon_widget.dart';
+import 'package:stalker/user/user_time_since_last_location.dart';
 
 class UserCard extends StatelessWidget {
   final User user;
@@ -58,9 +59,10 @@ class UserCard extends StatelessWidget {
                         user.displayName,
                         maxLines: 1,
                       ),
-                      Text(
-                        'Last seen ${user.lastLocationTimestamp}',
-                        textScaleFactor: 1,
+                      UserTimeSinceLastLocation(
+                        user: user,
+                        style: Theme.of(context).textTheme.labelSmall,
+                        includeSuffix: true,
                       ),
                     ],
                   ),
