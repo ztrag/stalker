@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/user/active_user.dart';
@@ -120,11 +121,11 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
               ),
               const SizedBox(height: 8),
               InkWell(
-                onTap: () => Share.share(editUser.token!),
+                onTap: () => Share.share(editUser.token!.encrypt),
                 child: ListTile(
                   title: const Text('Token'),
                   subtitle: Text(
-                    editUser.token ?? 'null',
+                    (editUser.token ?? 'null').encrypt,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   trailing: const Icon(Icons.share),
@@ -151,7 +152,7 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
     }
 
     final filepath = await editUser.iconPath;
-    final saved = await File(filepath!).writeAsBytes(icon);
+    final saved = await File(filepath).writeAsBytes(icon);
     editUser.hasLocalIcon = true;
 
     final db = await Db.db;

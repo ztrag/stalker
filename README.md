@@ -15,7 +15,6 @@ Find someone.
 ### UserIcon
 . Color vs faded vs black-white
 . Refresh on resume
-. Location received alert
 
 ### Last seen
 . 2d ago etc

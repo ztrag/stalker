@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/domain/has_id.dart';
 
 part 'user.g.dart';
@@ -30,16 +31,13 @@ class User with HasId {
   bool isEnabled = true;
 
   @ignore
-  Future<String?> get iconPath async {
-    if (token == null) {
-      return null;
-    }
+  Future<String> get iconPath async {
     final dir = await getApplicationSupportDirectory();
     return '${dir.path}/${token.hashCode}';
   }
 
   @ignore
-  String get displayName => (name?.isEmpty ?? true ? token : name) ?? '';
+  String get displayName => name?.isNotEmpty ?? false ? name! : token!.encrypt;
 
   @ignore
   bool get hasLocation =>

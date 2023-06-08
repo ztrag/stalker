@@ -1,8 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:stalker/alien/alien_encription.dart';
 
-const String kAlienChars = '─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙∀∁∂∃∄∅∆∇∈∉∊∋∌∍∎∏∐∑−∓∔∕∖∗∘∙√∛∜∝∞∟∠∡∢∣∤∥∦∧∨∩∪∴∵∶∷∸∹∺∻∼∽∾∿≀≁≂≃≄≅≆≇≈≉≊≋≌≍≎≏≐≑≒≓≔≕≖≗≘≙≚≛≜≝≞≟≠≡≢≣≤≥≦≧≨≩≪≫≬≭≮≯≰≱≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊀⊁⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⊕⊖⊗⊘⊙⊚⊛⊜⊝⊞⊟⊠⊡⊢⊣⊤⊥⊦⊧⊨⊩⊪⊫⊬⊭⊮⊯⊰⊱⊲⊳⊴⊵⊶⊷⊸⊹⊺⊻⊼⊽⊾⊿⋀⋁⋂⋃⋄⋅⋆⋇⋈⋉⋊⋋⋌⋍⋎⋏⋐⋑⋒⋓⋔⋕⋖⋗⋘⋙⋚⋛⋜⋝⋞⋟⋠⋡⋢⋣⋤⋥⋦⋧⋨⋩⋪⋫⋬⋭⋮⋯⋰⋱⋲⋳⋴⋵⋶⋷⋸⋹⋺⋻⋼⋽⋾⋿';
+const String kLoadingChars =
+    '─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙'
+    '$kAlienChars';
 
 final Random _kRandom = Random();
 
@@ -14,10 +17,10 @@ class LoadingText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      List.generate(length, (index) {
-        int i = _kRandom.nextInt(kAlienChars.length);
-        return kAlienChars.substring(i, i + 1);
-      }).join(),
+      List.generate(
+        length,
+        (index) => kLoadingChars[_kRandom.nextInt(kLoadingChars.length)],
+      ).join(),
       overflow: TextOverflow.clip,
       textScaleFactor: 0.6,
       style: Theme.of(context).textTheme.bodySmall!,

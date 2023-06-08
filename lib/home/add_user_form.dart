@@ -1,5 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 
@@ -75,7 +76,7 @@ class _AddUserFormState extends State<AddUserForm> {
     }
 
     final user = User();
-    user.token = _token.text;
+    user.token = _token.text.encrypt;
     user.didAttemptDownload = false;
     user.hasLocalIcon = false;
 

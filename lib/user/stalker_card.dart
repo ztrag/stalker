@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/edit_active_user_page.dart';
 import 'package:stalker/user/user_enabled_switch.dart';
@@ -30,7 +31,7 @@ class StalkerCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(4),
           onTap: () {
-            Share.share(ActiveUser().value!.token!);
+            Share.share(ActiveUser().value!.token!.encrypt);
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -65,7 +66,7 @@ class StalkerCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        ActiveUser().value!.token!,
+                        ActiveUser().value!.token!.encrypt,
                         style: const TextStyle(fontSize: 10),
                         maxLines: 2,
                       ),
