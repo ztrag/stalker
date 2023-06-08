@@ -15,11 +15,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "257664340444-d9dj9n0hc8mogt97vnoo5tefkuml17me.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gartz.stalker",
+            "certificate_hash": "51caec872f374a2751961f66c79cb4be4f95f04e"
+          }
+        },
+        {
           "client_id": "257664340444-v56dcmduikjccpubub41h08bmmn9h5rv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "gartz.stalker",
             "certificate_hash": "a32f68d7b09cc928639cdd628023df1f146caf41"
+          }
+        },
+        {
+          "client_id": "257664340444-vhh8kvbk62uf31j6819vgf8kugrqjj7t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gartz.stalker",
+            "certificate_hash": "b93cf22dcd3faaa9d58cdcd8f00703a06d068e3d"
           }
         },
         {
@@ -38,6 +54,13 @@
             {
               "client_id": "257664340444-inaiaoaiv7srapfhrvqik3ckb0lnn8ls.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "257664340444-mgukqua690d20ru319q92uj6u81290jb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "gartz.stalker"
+              }
             }
           ]
         }

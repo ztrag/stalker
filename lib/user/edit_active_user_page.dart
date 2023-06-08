@@ -176,8 +176,7 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
     final db = await Db.db;
     db.writeTxn(() => db.users.put(editUser));
 
-    final ref = FirebaseStorage.instance
-        .ref('${ActiveUser().value!.token!.hashCode}-n');
+    final ref = FirebaseStorage.instance.ref('${editUser.token!.hashCode}-n');
     await ref.putString(name);
   }
 
