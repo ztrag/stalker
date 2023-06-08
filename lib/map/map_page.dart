@@ -115,7 +115,14 @@ class _MapPageState extends State<MapPage> {
                           icon: SizedBox(
                             width: 30,
                             height: 30,
-                            child: UserIconWidget(user: e),
+                            child: Theme(
+                              data: ThemeData(
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .apply(fontSizeFactor: 0.5),
+                              ),
+                              child: UserIconWidget(user: e),
+                            ),
                           ),
                         ),
                       )

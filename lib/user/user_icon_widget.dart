@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stalker/domain/user.dart';
+import 'package:stalker/user/user_activity_widget.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 
 class UserIconWidget extends StatefulWidget {
@@ -50,19 +51,29 @@ class _UserIconWidgetState extends State<UserIconWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: UserIconProvider(),
-      builder: (_, __) => _iconImage,
+    return Stack(
+      children: [
+        Positioned.fill(child: _iconImage),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: UserActivityWidget(user: widget.user),
+        ),
+      ],
     );
   }
 
   Widget get _iconImage {
-    return _image != null
-        ? Image.memory(
-            _image!,
-            errorBuilder: (_, __, ___) => _errorWidget,
-          )
-        : _errorWidget;
+    return AnimatedBuilder(
+      animation: UserIconProvider(),
+      builder: (_, __) => _image != null
+          ? Image.memory(
+              _image!,
+              errorBuilder: (_, __, ___) => _errorWidget,
+            )
+          : _errorWidget,
+    );
   }
 
   Widget get _errorWidget {

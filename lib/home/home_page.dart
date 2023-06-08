@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stalker/help/help_page.dart';
 import 'package:stalker/home/add_user_form.dart';
 import 'package:stalker/theme/loading_text.dart';
+import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/users_list_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -57,12 +58,8 @@ class _HomePageState extends State<HomePage> {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   const LoadingText(),
-                  Text(
-                    'stalker',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                  ),
+                  Text('stalker',
+                      style: Theme.of(context).textTheme.bodyMedium!),
                   const Expanded(child: LoadingText(length: 100)),
                 ],
               ),
@@ -72,14 +69,18 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          AnimatedOpacity(
-            opacity: _isShowingBg ? 0.15 : 0.35,
-            duration: const Duration(milliseconds: 750),
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/bg.webp'),
-                  fit: BoxFit.cover,
+          AnimatedBuilder(
+            animation: ActiveUser(),
+            builder: (_, __) => AnimatedOpacity(
+              opacity: (_isShowingBg ? 0.125 : 0.4) *
+                  (ActiveUser().value!.isEnabled ? 1 : 0.25),
+              duration: const Duration(milliseconds: 750),
+              child: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/bg.webp'),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

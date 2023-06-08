@@ -8,6 +8,7 @@ import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/location/position_fetcher.dart';
+import 'package:stalker/stalk/stalk_message_hub.dart';
 import 'package:stalker/user/active_user.dart';
 
 enum StalkAction {
@@ -30,11 +31,13 @@ enum StalkAction {
 class StalkMessage {
   final StalkAction action;
   final User sender;
+  final User target;
   final Map<String, dynamic> data;
 
   StalkMessage({
     required this.action,
     required this.sender,
+    required this.target,
     required this.data,
   });
 }
@@ -61,12 +64,13 @@ class StalkProtocol {
     _handleStalkMessage(StalkMessage(
       action: stalkAction,
       sender: users.last,
+      target: ActiveUser().value!,
       data: message.data,
     ));
   }
 
   void _handleStalkMessage(StalkMessage message) async {
-    _messageStreamController.sink.add(message);
+    _streamMessageToUi(message);
     switch (message.action) {
       case StalkAction.stalkRequest:
         if (!message.sender.isEnabled) {
@@ -108,6 +112,14 @@ class StalkProtocol {
     StalkAction action, [
     Map<String, dynamic> data = const {},
   ]) {
+    _streamMessageToUi(
+      StalkMessage(
+        action: action,
+        sender: ActiveUser().value!,
+        target: target,
+        data: data,
+      ),
+    );
     return _sendFcm(
       target.token!,
       <String, dynamic>{
@@ -177,5 +189,10 @@ class StalkProtocol {
       't': (position.timestamp ?? DateTime.now()).millisecondsSinceEpoch,
       'a': position.accuracy,
     };
+  }
+
+  void _streamMessageToUi(StalkMessage message) {
+    StalkMessageHub().onStalkMessage(message);
+    _messageStreamController.sink.add(message);
   }
 }

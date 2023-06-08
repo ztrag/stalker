@@ -53,17 +53,14 @@ class _UserEnabledSwitchState extends State<UserEnabledSwitch> {
         return AnimatedOpacity(
           opacity: isHidden ? 0.1 : 1,
           duration: const Duration(milliseconds: 300),
-          child: IgnorePointer(
-            ignoring: isHidden,
-            child: Switch(
-              value: liveUser.value!.isEnabled,
-              onChanged: (v) {
-                UserEnabledSwitch.toggleInDb(liveUser.value!, v);
-                if (widget.onValueChanged != null) {
-                  widget.onValueChanged!(v);
-                }
-              },
-            ),
+          child: Switch(
+            value: liveUser.value!.isEnabled,
+            onChanged: (v) {
+              UserEnabledSwitch.toggleInDb(liveUser.value!, v);
+              if (widget.onValueChanged != null) {
+                widget.onValueChanged!(v);
+              }
+            },
           ),
         );
       },

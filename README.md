@@ -6,6 +6,9 @@ Find someone.
 
 ## TODO
 
+###
+. Map Skull
+
 ### Icon + Splashscreen
 . Splashscreen same as home
 
