@@ -2,7 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-const String _kChars = '_+-|_-----~~~~~~~___....=.';
+const String kAlienChars = '─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙─━╾╼+~∘∙∀∁∂∃∄∅∆∇∈∉∊∋∌∍∎∏∐∑−∓∔∕∖∗∘∙√∛∜∝∞∟∠∡∢∣∤∥∦∧∨∩∪∴∵∶∷∸∹∺∻∼∽∾∿≀≁≂≃≄≅≆≇≈≉≊≋≌≍≎≏≐≑≒≓≔≕≖≗≘≙≚≛≜≝≞≟≠≡≢≣≤≥≦≧≨≩≪≫≬≭≮≯≰≱≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊀⊁⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⊕⊖⊗⊘⊙⊚⊛⊜⊝⊞⊟⊠⊡⊢⊣⊤⊥⊦⊧⊨⊩⊪⊫⊬⊭⊮⊯⊰⊱⊲⊳⊴⊵⊶⊷⊸⊹⊺⊻⊼⊽⊾⊿⋀⋁⋂⋃⋄⋅⋆⋇⋈⋉⋊⋋⋌⋍⋎⋏⋐⋑⋒⋓⋔⋕⋖⋗⋘⋙⋚⋛⋜⋝⋞⋟⋠⋡⋢⋣⋤⋥⋦⋧⋨⋩⋪⋫⋬⋭⋮⋯⋰⋱⋲⋳⋴⋵⋶⋷⋸⋹⋺⋻⋼⋽⋾⋿';
+
 final Random _kRandom = Random();
 
 class LoadingText extends StatelessWidget {
@@ -14,8 +15,8 @@ class LoadingText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       List.generate(length, (index) {
-        int i = _kRandom.nextInt(_kChars.length);
-        return _kChars.substring(i, i + 1);
+        int i = _kRandom.nextInt(kAlienChars.length);
+        return kAlienChars.substring(i, i + 1);
       }).join(),
       overflow: TextOverflow.clip,
       textScaleFactor: 0.6,
