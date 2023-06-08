@@ -9,6 +9,8 @@ import 'package:stalker/domain/user.dart';
 import 'package:stalker/live/live_data.dart';
 import 'package:stalker/map/map_styles.dart';
 import 'package:stalker/stalk/stalk_machine.dart';
+import 'package:stalker/stalk/stalk_message_hub.dart';
+import 'package:stalker/theme/loading_text.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 import 'package:stalker/user/user_icon_widget.dart';
@@ -70,6 +72,12 @@ class _MapPageState extends State<MapPage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
+          title: AnimatedBuilder(
+            animation: StalkMessageHub().getRecentMessagesNotifier(),
+            builder: (_, __) => LoadingText(
+              length: StalkMessageHub().getRecentMessagesNotifier().value,
+            ),
+          ),
         ),
         body: Platform.isIOS
             ? Container()

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stalker/help/help_page.dart';
 import 'package:stalker/home/add_user_form.dart';
+import 'package:stalker/stalk/stalk_message_hub.dart';
 import 'package:stalker/theme/loading_text.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/users_list_widget.dart';
@@ -57,10 +58,22 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  const LoadingText(),
+                  AnimatedBuilder(
+                    animation: StalkMessageHub().getRecentMessagesNotifier(),
+                    builder: (_, __) => LoadingText(key: GlobalKey()),
+                  ),
                   Text('stalker',
                       style: Theme.of(context).textTheme.bodyMedium!),
-                  const Expanded(child: LoadingText(length: 100)),
+                  Expanded(
+                    child: AnimatedBuilder(
+                      animation: StalkMessageHub().getRecentMessagesNotifier(),
+                      builder: (_, __) => LoadingText(
+                          length: 100 +
+                              StalkMessageHub()
+                                  .getRecentMessagesNotifier()
+                                  .value),
+                    ),
+                  ),
                 ],
               ),
             ),
