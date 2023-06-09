@@ -15,10 +15,10 @@ class UserCardCenterColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        hasName ? Text(user.name!) : Container(),
+        hasName ? Text(user.name!, style: Theme.of(context).textTheme.bodyLarge,) : Container(),
         TokenText(
           user: user,
-          maxLines: hasName ? 1 : 3,
+          maxLines: hasName ? 1 : 2,
         ),
         UserTimeSinceLastLocation(
           user: user,

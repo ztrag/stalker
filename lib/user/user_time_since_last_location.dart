@@ -8,12 +8,14 @@ class UserTimeSinceLastLocation extends StatefulWidget {
   final User user;
   final TextStyle? style;
   final bool includeSuffix;
+  final double? textScaleFactor;
 
   const UserTimeSinceLastLocation({
     Key? key,
     required this.user,
     this.style,
     this.includeSuffix = false,
+    this.textScaleFactor,
   }) : super(key: key);
 
   @override
@@ -44,6 +46,7 @@ class _UserTimeSinceLastLocationState extends State<UserTimeSinceLastLocation> {
         event: liveUser.value!.lastLocationTimestamp,
         style: widget.style,
         includeSuffix: widget.includeSuffix,
+        textScaleFactor: widget.textScaleFactor,
       ),
     );
   }

@@ -140,6 +140,7 @@ class _MapPageState extends State<MapPage> {
                     UserTimeSinceLastLocation(
                       user: widget.user,
                       style: Theme.of(context).textTheme.labelSmall,
+                      textScaleFactor: 1,
                     ),
                   ],
                 ),

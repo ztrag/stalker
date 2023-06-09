@@ -15,12 +15,14 @@ class TimeElapsedText extends StatefulWidget {
   final DateTime? event;
   final TextStyle? style;
   final bool includeSuffix;
+  final double? textScaleFactor;
 
   const TimeElapsedText({
     Key? key,
     required this.event,
     this.style,
     this.includeSuffix = false,
+    this.textScaleFactor,
   }) : super(key: key);
 
   @override
@@ -51,7 +53,11 @@ class _TimeElapsedTextState extends State<TimeElapsedText> {
     return ValueListenableBuilder(
       valueListenable: text,
       builder: (_, __, ___) => text.value.isNotEmpty
-          ? Text(text.value, style: widget.style)
+          ? Text(
+              text.value,
+              style: widget.style,
+              textScaleFactor: widget.textScaleFactor,
+            )
           : Wrap(),
     );
   }

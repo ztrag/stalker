@@ -148,7 +148,7 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child:
-                              TokenText(user: editUser, textScaleFactor: 0.8),
+                              TokenText(user: editUser),
                         ),
                       ),
                       const SizedBox(height: 8),
