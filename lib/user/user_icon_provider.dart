@@ -101,7 +101,7 @@ class UserIconProvider extends ChangeNotifier {
       return _cache[props] ??= networkImage;
     }
 
-    return fetch(savedUser, props.size);
+    return _fetch(_UserIconProps(user: savedUser, size: props.size));
   }
 
   Future<Uint8List?> _fetchFromDisk(_UserIconProps props) async {
@@ -113,10 +113,10 @@ class UserIconProvider extends ChangeNotifier {
       return file.readAsBytes();
     }
 
-    return _fetchAlternateSize(props);
+    return _resizeFromOriginal(props);
   }
 
-  Future<Uint8List?> _fetchAlternateSize(_UserIconProps props) async {
+  Future<Uint8List?> _resizeFromOriginal(_UserIconProps props) async {
     if (props.size == UserIconSize.original) {
       return null;
     }
