@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:stalker/countdown_time/time_elapsed_text.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/live/live_data.dart';
+import 'package:stalker/ticker/ticker_text.dart';
 
 class UserTimeSinceLastLocation extends StatefulWidget {
   final User user;
@@ -42,7 +42,7 @@ class _UserTimeSinceLastLocationState extends State<UserTimeSinceLastLocation> {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: liveUser,
-      builder: (_, __) => TimeElapsedText(
+      builder: (_, __) => TickerText(
         event: liveUser.value!.lastLocationTimestamp,
         style: widget.style,
         includeSuffix: widget.includeSuffix,

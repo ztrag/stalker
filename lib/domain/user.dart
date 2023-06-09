@@ -31,15 +31,15 @@ class User with HasId {
 
   bool isEnabled = true;
 
-  Future<String> getIconPath(UserIconSize size) async {
-    final dir = await getApplicationSupportDirectory();
-    return '${dir.path}/${token.hashCode}-${size.suffix}';
-  }
-
   @ignore
   String get displayName => name?.isNotEmpty ?? false ? name! : token!.encrypt;
 
   @ignore
   bool get hasLocation =>
       lastLocationLongitude != null && lastLocationLatitude != null;
+
+  Future<String> getIconPath(UserIconSize size) async {
+    final dir = await getApplicationSupportDirectory();
+    return '${dir.path}/${token.hashCode}-${size.suffix}';
+  }
 }

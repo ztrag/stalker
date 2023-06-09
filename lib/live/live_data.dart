@@ -4,18 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:stalker/domain/has_id.dart';
 
-class LiveData<T extends HasId> extends ChangeNotifier {
+class LiveData<T extends HasId> extends ValueNotifier<T?> {
   StreamSubscription<T?>? listen;
 
-  T? value;
-
-  LiveData(T this.value);
+  LiveData(super.value);
 
   LiveData inCollection(IsarCollection<T> collection) {
     listen?.cancel();
     listen = collection.watchObject(value!.id).listen((event) {
       value = event;
-      notifyListeners();
     });
     return this;
   }
