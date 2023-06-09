@@ -62,8 +62,10 @@ class DefaultFirebaseOptions {
     projectId: 'stalker-a01a3',
     databaseURL: 'https://stalker-a01a3.firebaseio.com',
     storageBucket: 'stalker-a01a3.appspot.com',
-    androidClientId: '257664340444-d9dj9n0hc8mogt97vnoo5tefkuml17me.apps.googleusercontent.com',
-    iosClientId: '257664340444-mgukqua690d20ru319q92uj6u81290jb.apps.googleusercontent.com',
+    androidClientId:
+        '257664340444-d9dj9n0hc8mogt97vnoo5tefkuml17me.apps.googleusercontent.com',
+    iosClientId:
+        '257664340444-mgukqua690d20ru319q92uj6u81290jb.apps.googleusercontent.com',
     iosBundleId: 'gartz.stalker',
   );
 
@@ -74,8 +76,10 @@ class DefaultFirebaseOptions {
     projectId: 'stalker-a01a3',
     databaseURL: 'https://stalker-a01a3.firebaseio.com',
     storageBucket: 'stalker-a01a3.appspot.com',
-    androidClientId: '257664340444-d9dj9n0hc8mogt97vnoo5tefkuml17me.apps.googleusercontent.com',
-    iosClientId: '257664340444-mgukqua690d20ru319q92uj6u81290jb.apps.googleusercontent.com',
+    androidClientId:
+        '257664340444-d9dj9n0hc8mogt97vnoo5tefkuml17me.apps.googleusercontent.com',
+    iosClientId:
+        '257664340444-mgukqua690d20ru319q92uj6u81290jb.apps.googleusercontent.com',
     iosBundleId: 'gartz.stalker',
   );
 }

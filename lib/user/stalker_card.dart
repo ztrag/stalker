@@ -39,7 +39,8 @@ class StalkerCard extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (c) => const EditActiveUserPage()),
+                            MaterialPageRoute(
+                                builder: (c) => const EditActiveUserPage()),
                           );
                         },
                         child: SizedBox(

@@ -1,5 +1,4 @@
-const String kLightMap =
-'''
+const String kLightMap = '''
 [
   {
     "elementType": "geometry",
@@ -241,8 +240,7 @@ const String kLightMap =
 ]
 ''';
 
-const String kDarkMap =
-'''
+const String kDarkMap = '''
 [
   {
     "elementType": "geometry",

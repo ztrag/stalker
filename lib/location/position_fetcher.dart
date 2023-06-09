@@ -18,9 +18,9 @@ class LocationFetcher {
       return;
     }
 
-    _inputStreamSubscription ??= Geolocator.getPositionStream(
-            locationSettings: const LocationSettings())
-        .listen((event) {
+    _inputStreamSubscription ??=
+        Geolocator.getPositionStream(locationSettings: const LocationSettings())
+            .listen((event) {
       position.value = event;
     });
     Geolocator.getLastKnownPosition().then((value) {
