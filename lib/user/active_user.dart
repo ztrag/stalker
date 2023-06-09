@@ -5,17 +5,16 @@ import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 
-class ActiveUser extends ChangeNotifier {
+class ActiveUser extends ValueNotifier<User?> {
   static ActiveUser instance = ActiveUser._();
 
   final Completer _completer = Completer();
 
-  User? value;
   bool hasLoaded = false;
 
   factory ActiveUser() => instance;
 
-  ActiveUser._() {
+  ActiveUser._() : super(null) {
     _init();
   }
 
@@ -23,14 +22,13 @@ class ActiveUser extends ChangeNotifier {
     final db = await Db.db;
     final query = db.users.where();
 
-    value = await query.findFirst();
+    final v = await query.findFirst();
     hasLoaded = true;
     _completer.complete();
-    notifyListeners();
+    value = v;
 
     query.watch().listen((event) {
       value = event.isEmpty ? null : event.first;
-      notifyListeners();
     });
   }
 

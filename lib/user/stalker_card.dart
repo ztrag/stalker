@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:stalker/alien/alien_encription.dart';
+import 'package:stalker/domain/user.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/edit_active_user_page.dart';
+import 'package:stalker/user/user_card_center_column.dart';
 import 'package:stalker/user/user_enabled_switch.dart';
 import 'package:stalker/user/user_icon_widget.dart';
 
@@ -13,9 +13,9 @@ class StalkerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
-      child: AnimatedBuilder(
-        animation: ActiveUser(),
-        builder: (_, child) => Material(
+      child: ValueListenableBuilder<User?>(
+        valueListenable: ActiveUser(),
+        builder: (_, user, child) => Material(
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(4),
             bottomRight: Radius.circular(4),
@@ -25,57 +25,35 @@ class StalkerCard extends StatelessWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             color: _getCardColor(context),
-            child: child,
-          ),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: () {
-            Share.share(ActiveUser().value!.token!.encrypt);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (c) => const EditActiveUserPage()),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: UserIconWidget(user: ActiveUser().value!),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (c) => const EditActiveUserPage()),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
                     children: [
-                      AnimatedBuilder(
-                        animation: ActiveUser(),
-                        builder: (_, __) => Text(
-                          ActiveUser().value!.name!,
-                          style: const TextStyle(fontSize: 12),
+                      SizedBox(
+                        width: kUserIconSize,
+                        height: kUserIconSize,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: UserIconWidget(user: user!),
                         ),
                       ),
-                      Text(
-                        ActiveUser().value!.token!.encrypt,
-                        style: const TextStyle(fontSize: 10),
-                        maxLines: 2,
-                      ),
+                      const SizedBox(width: 8),
+                      Expanded(child: UserCardCenterColumn(user: user)),
+                      const SizedBox(width: 8),
+                      UserEnabledSwitch(user: user),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                UserEnabledSwitch(user: ActiveUser().value!),
-              ],
+              ),
             ),
           ),
         ),

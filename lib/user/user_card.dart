@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/map/map_page.dart';
+import 'package:stalker/user/user_card_center_column.dart';
 import 'package:stalker/user/user_enabled_switch.dart';
 import 'package:stalker/user/user_icon_widget.dart';
-import 'package:stalker/user/user_time_since_last_location.dart';
 
 class UserCard extends StatelessWidget {
   final User user;
@@ -32,8 +32,8 @@ class UserCard extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 80,
-                  height: 80,
+                  width: kUserIconSize,
+                  height: kUserIconSize,
                   child: PopupMenuButton<String>(
                     onSelected: (String item) {
                       if (item == 'Delete') {
@@ -51,22 +51,7 @@ class UserCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.displayName,
-                        maxLines: 1,
-                      ),
-                      UserTimeSinceLastLocation(
-                        user: user,
-                        style: Theme.of(context).textTheme.labelSmall,
-                        includeSuffix: true,
-                      ),
-                    ],
-                  ),
-                ),
+                Expanded(child: UserCardCenterColumn(user: user)),
                 const SizedBox(width: 8),
                 UserEnabledSwitch(user: user),
               ],

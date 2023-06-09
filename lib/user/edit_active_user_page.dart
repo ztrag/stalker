@@ -9,6 +9,7 @@ import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/user/active_user.dart';
+import 'package:stalker/user/token_text.dart';
 import 'package:stalker/user/user_enabled_switch.dart';
 import 'package:stalker/user/user_icon_picker.dart';
 import 'package:stalker/user/user_icon_provider.dart';
@@ -71,45 +72,51 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: InkWell(
-                      onTap: userIconPicker.pick,
-                      child: ValueListenableBuilder<Uint8List?>(
-                        valueListenable: userIconPicker,
-                        builder: (_, __, ___) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: UserIconWidget(
-                            user: editUser,
-                            errorWidget: const Icon(Icons.image_outlined),
-                            image: userIconPicker.value,
+              SizedBox(
+                height: kUserIconSize,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: kUserIconSize,
+                      child: InkWell(
+                        onTap: userIconPicker.pick,
+                        child: ValueListenableBuilder<Uint8List?>(
+                          valueListenable: userIconPicker,
+                          builder: (_, __, ___) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: UserIconWidget(
+                              user: editUser,
+                              errorWidget: const Icon(Icons.image_outlined),
+                              image: userIconPicker.value,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(label: Text('Name')),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: nameController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                          hintText: 'John Doe',
+                          contentPadding: EdgeInsets.symmetric(vertical: 2.0),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                  ],
+                ),
               ),
-              const SizedBox(height: 8),
-              const Divider(),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
               InkWell(
                 onTap: _toggleEnabled,
                 child: ListTile(
-                  title: const Text('Position'),
+                  title: const Text('Location Sharing'),
                   subtitle: Text(
-                    'Enabled users will be able to stalk me.',
-                    style: Theme.of(context).textTheme.bodySmall,
+                    'Allow enabled contacts to stalk me.',
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                   trailing: ActiveUser().value == null
                       ? null
@@ -124,9 +131,28 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
                 onTap: () => Share.share(editUser.token!.encrypt),
                 child: ListTile(
                   title: const Text('Token'),
-                  subtitle: Text(
-                    (editUser.token ?? 'null').encrypt,
-                    style: Theme.of(context).textTheme.bodySmall,
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Exchange with a friend to establish contact.',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.0),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child:
+                              TokenText(user: editUser, textScaleFactor: 0.8),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
                   ),
                   trailing: const Icon(Icons.share),
                 ),

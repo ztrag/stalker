@@ -50,7 +50,9 @@ class _TimeElapsedTextState extends State<TimeElapsedText> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: text,
-      builder: (_, __, ___) => Text(text.value, style: widget.style),
+      builder: (_, __, ___) => text.value.isNotEmpty
+          ? Text(text.value, style: widget.style)
+          : Wrap(),
     );
   }
 

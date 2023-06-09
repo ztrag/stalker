@@ -2,8 +2,6 @@
 
 Find someone.
 
-## Getting Started
-
 ## TODO
 
 ### Background/Notification
@@ -22,8 +20,8 @@ Find someone.
 ### Last seen
 . Refresh on resume + lifecycle
 
-### Name
-. Edit for other users
+### EditUserPage
+. Apply for other users
 
 ### Chat
 . Chat Model / db.
