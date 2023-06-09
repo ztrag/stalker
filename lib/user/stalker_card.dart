@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/edit_active_user_page.dart';
@@ -29,21 +31,24 @@ class StalkerCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(4),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (c) => const EditActiveUserPage()),
-                  );
-                },
+                onTap: () => Share.share(user.token!.encrypt),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: kUserIconSize,
-                        height: kUserIconSize,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: UserIconWidget(user: user!),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (c) => const EditActiveUserPage()),
+                          );
+                        },
+                        child: SizedBox(
+                          width: kUserIconSize,
+                          height: kUserIconSize,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: UserIconWidget(user: user!),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),

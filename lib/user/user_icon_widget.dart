@@ -4,7 +4,7 @@ import 'package:stalker/domain/user.dart';
 import 'package:stalker/user/user_activity_widget.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 
-const double kUserIconSize = 70.0;
+const double kUserIconSize = 60.0;
 
 class UserIconWidget extends StatefulWidget {
   final User user;
