@@ -53,7 +53,12 @@ class UserCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(child: UserCardCenterColumn(user: user)),
                 const SizedBox(width: 8),
-                UserEnabledSwitch(user: user),
+                SizedBox(
+                    height: 40,
+                    child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: UserEnabledSwitch(user: user))),
+                const SizedBox(width: 8),
               ],
             ),
           ),

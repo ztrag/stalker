@@ -67,15 +67,12 @@ class _UserIconWidgetState extends State<UserIconWidget> {
   }
 
   Widget get _iconImage {
-    return AnimatedBuilder(
-      animation: UserIconProvider(),
-      builder: (_, __) => _image != null
-          ? Image.memory(
-              _image!,
-              errorBuilder: (_, __, ___) => _errorWidget,
-            )
-          : _errorWidget,
-    );
+    return _image != null
+        ? Image.memory(
+            _image!,
+            errorBuilder: (_, __, ___) => _errorWidget,
+          )
+        : _errorWidget;
   }
 
   Widget get _errorWidget {
