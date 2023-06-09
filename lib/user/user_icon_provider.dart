@@ -19,29 +19,43 @@ enum UserIconSize {
   final int size;
 }
 
-class _UserIconProps {
+class UserIconProps {
   final User user;
   final UserIconSize size;
+  final bool grayScale;
 
-  _UserIconProps({required this.user, required this.size});
+  UserIconProps({
+    required this.user,
+    this.size = UserIconSize.original,
+    this.grayScale = false,
+  });
+
+  UserIconProps copyWith({User? user, UserIconSize? size, bool? grayScale}) {
+    return UserIconProps(
+      user: user ?? this.user,
+      size: size ?? this.size,
+      grayScale: grayScale ?? this.grayScale,
+    );
+  }
 
   @override
   int get hashCode =>
       user.id * UserIconSize.values.length +
       UserIconSize.values.indexOf(size) +
-      user.token.hashCode;
+      user.token.hashCode * (grayScale ? 7 : 11);
 
   @override
   bool operator ==(Object other) {
-    return other is _UserIconProps &&
+    return other is UserIconProps &&
         other.user.id == user.id &&
-        other.size == size;
+        other.size == size &&
+        other.grayScale == grayScale;
   }
 }
 
 class UserIconProvider extends ChangeNotifier {
   static final UserIconProvider _instance = UserIconProvider._();
-  final Map<_UserIconProps, Uint8List?> _cache = {};
+  final Map<UserIconProps, Uint8List?> _cache = {};
   final Map<String, Future?> _processingQueue = {};
 
   UserIconProvider._();
@@ -49,25 +63,27 @@ class UserIconProvider extends ChangeNotifier {
   factory UserIconProvider() => _instance;
 
   void cache(User user, Uint8List data) {
-    for (final size in UserIconSize.values) {
-      _cache[_UserIconProps(user: user, size: size)] =
-          size == UserIconSize.original ? data : null;
-    }
+    _cache.removeWhere((key, value) => key.user.id == user.id);
+    _cache[UserIconProps(user: user)] = data;
     notifyListeners();
   }
 
-  Future<Uint8List?> fetch(User user, UserIconSize size) async {
-    final props = _UserIconProps(user: user, size: size);
-    final path = await user.getIconPath(size);
+  Future<Uint8List?> fetch(UserIconProps props) async {
+    final path = '${await props.user.getIconPath(props.size)}'
+        '${props.grayScale ? '-g' : ''}';
     final task = _processingQueue[path] ??= _fetch(props);
     final result = await task;
     _processingQueue[path] = null;
     return result;
   }
 
-  Future<Uint8List?> _fetch(_UserIconProps props) async {
+  Future<Uint8List?> _fetch(UserIconProps props) async {
     if (_cache[props] != null) {
       return _cache[props];
+    }
+
+    if (props.grayScale) {
+      return _cache[props] ??= await _fetchGrayscale(props);
     }
 
     if (props.user.hasLocalIcon!) {
@@ -101,10 +117,22 @@ class UserIconProvider extends ChangeNotifier {
       return _cache[props] ??= networkImage;
     }
 
-    return _fetch(_UserIconProps(user: savedUser, size: props.size));
+    return _fetch(props.copyWith(user: savedUser));
   }
 
-  Future<Uint8List?> _fetchFromDisk(_UserIconProps props) async {
+  Future<Uint8List?> _fetchGrayscale(UserIconProps props) async {
+    final original = await fetch(props.copyWith(grayScale: false));
+    if (original == null) {
+      return null;
+    }
+
+    final decodePng = img.decodePng(original);
+    final grayscale = img.grayscale(decodePng!);
+    final encodePng = img.encodePng(grayscale);
+    return encodePng;
+  }
+
+  Future<Uint8List?> _fetchFromDisk(UserIconProps props) async {
     final dir = await getApplicationSupportDirectory();
     final filepath =
         '${dir.path}/${props.user.token.hashCode}-${props.size.suffix}';
@@ -116,13 +144,12 @@ class UserIconProvider extends ChangeNotifier {
     return _resizeFromOriginal(props);
   }
 
-  Future<Uint8List?> _resizeFromOriginal(_UserIconProps props) async {
+  Future<Uint8List?> _resizeFromOriginal(UserIconProps props) async {
     if (props.size == UserIconSize.original) {
       return null;
     }
 
-    final original = await _fetchFromDisk(
-        _UserIconProps(user: props.user, size: UserIconSize.original));
+    final original = await _fetchFromDisk(UserIconProps(user: props.user));
     if (original == null) {
       return null;
     }

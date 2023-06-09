@@ -50,7 +50,8 @@ class _UserIconWidgetState extends State<UserIconWidget> {
 
   void _fetch() async {
     _image = widget.image ??
-        await UserIconProvider().fetch(widget.user, widget.size);
+        await UserIconProvider()
+            .fetch(UserIconProps(user: widget.user, size: widget.size));
     setState(() {});
   }
 

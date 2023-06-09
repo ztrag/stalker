@@ -58,7 +58,9 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _fetchIconForUser(User user) async {
-    final result = await UserIconProvider().fetch(user, UserIconSize.medium);
+    final result = await UserIconProvider().fetch(
+      UserIconProps(user: user, size: UserIconSize.medium),
+    );
     if (result != null) {
       cachedImages[user.id] = result;
     }
