@@ -25,6 +25,10 @@ class ActiveUser extends ValueNotifier<User?> {
     final v = await query.findFirst();
     hasLoaded = true;
     _completer.complete();
+
+    if (v == null) {
+      notifyListeners();
+    }
     value = v;
 
     query.watch().listen((event) {

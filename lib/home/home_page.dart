@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(1.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4.0),
-                  child: Image.asset('assets/images/eye-left-fuzz.png'),
+                  child: Image.asset('assets/images/eye-left-fuzz-small.png'),
                 ),
               ),
             ),
