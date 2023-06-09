@@ -58,7 +58,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _fetchIconForUser(User user) async {
-    final result = await UserIconProvider().fetch(user);
+    final result = await UserIconProvider().fetch(user, UserIconSize.medium);
     if (result != null) {
       cachedImages[user.id] = result;
     }
@@ -131,7 +131,10 @@ class _MapPageState extends State<MapPage> {
                                       .textTheme
                                       .apply(fontSizeFactor: 0.5),
                                 ),
-                                child: UserIconWidget(user: e),
+                                child: UserIconWidget(
+                                  user: e,
+                                  size: UserIconSize.small,
+                                ),
                               ),
                             ),
                           ),

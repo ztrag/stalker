@@ -2,6 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/domain/has_id.dart';
+import 'package:stalker/user/user_icon_provider.dart';
 
 part 'user.g.dart';
 
@@ -30,10 +31,9 @@ class User with HasId {
 
   bool isEnabled = true;
 
-  @ignore
-  Future<String> get iconPath async {
+  Future<String> getIconPath(UserIconSize size) async {
     final dir = await getApplicationSupportDirectory();
-    return '${dir.path}/${token.hashCode}';
+    return '${dir.path}/${token.hashCode}-${size.suffix}';
   }
 
   @ignore

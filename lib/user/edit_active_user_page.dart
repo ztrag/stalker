@@ -176,14 +176,19 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
       return;
     }
 
-    final filepath = await editUser.iconPath;
+    final filepath = await editUser.getIconPath(UserIconSize.original);
     final saved = await File(filepath).writeAsBytes(icon);
+    for (final size in UserIconSize.values) {
+      if (size != UserIconSize.original) {
+        File(await editUser.getIconPath(size)).delete();
+      }
+    }
     editUser.hasLocalIcon = true;
 
     final db = await Db.db;
     db.writeTxn(() => db.users.put(editUser));
 
-    UserIconProvider().store(editUser, icon);
+    UserIconProvider().cache(editUser, icon);
 
     final ref = FirebaseStorage.instance.ref('${editUser.token!.hashCode}');
     await ref.putFile(saved);

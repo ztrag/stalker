@@ -10,12 +10,14 @@ class UserIconWidget extends StatefulWidget {
   final User user;
   final Widget? errorWidget;
   final Uint8List? image;
+  final UserIconSize size;
 
   const UserIconWidget({
     Key? key,
     required this.user,
     this.errorWidget,
     this.image,
+    this.size = UserIconSize.large,
   }) : super(key: key);
 
   @override
@@ -47,7 +49,8 @@ class _UserIconWidgetState extends State<UserIconWidget> {
   }
 
   void _fetch() async {
-    _image = widget.image ?? await UserIconProvider().fetch(widget.user);
+    _image = widget.image ??
+        await UserIconProvider().fetch(widget.user, widget.size);
     setState(() {});
   }
 
