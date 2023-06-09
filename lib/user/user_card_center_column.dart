@@ -15,7 +15,12 @@ class UserCardCenterColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        hasName ? Text(user.name!, style: Theme.of(context).textTheme.bodyLarge,) : Container(),
+        hasName
+            ? Text(
+                user.name!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              )
+            : Container(),
         TokenText(
           user: user,
           maxLines: hasName ? 1 : 2,
