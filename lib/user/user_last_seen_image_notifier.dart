@@ -20,17 +20,17 @@ class UserLastSeenImageNotifier extends ValueNotifier<UserIconProps> {
     TickerThreshold(
       time: const Duration(minutes: 2),
       builder: (t) => UserIconProps(
-          user: user, size: size, grayScale: 0.25, opacity: 0.95 * baseOpacity),
+          user: user, size: size, grayScale: 0.4, opacity: 0.8 * baseOpacity),
     ),
     TickerThreshold(
       time: const Duration(minutes: 5),
       builder: (t) => UserIconProps(
-          user: user, size: size, grayScale: 0.5, opacity: 0.9 * baseOpacity),
+          user: user, size: size, grayScale: 0.7, opacity: 0.7 * baseOpacity),
     ),
     TickerThreshold(
       time: const Duration(days: 365000),
       builder: (t) => UserIconProps(
-          user: user, size: size, grayScale: 1, opacity: 0.8 * baseOpacity),
+          user: user, size: size, grayScale: 1, opacity: 0.6 * baseOpacity),
     ),
   ]);
 

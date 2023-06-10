@@ -128,9 +128,6 @@ class _MapPageState extends State<MapPage> {
                                 icon: BitmapDescriptor.fromBytes(
                                     cachedImages[e.id]!),
                                 onTap: () => fabOpacity.value = 0,
-                                infoWindow: InfoWindow(
-                                  title: '${userLastSeenTextTicker.value}',
-                                ),
                               ))
                           .toSet(),
                       zoomControlsEnabled: false,
