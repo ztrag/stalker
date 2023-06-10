@@ -21,7 +21,7 @@ class StalkMessageHub {
       ++n.value;
     }
 
-    Future.delayed(const Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 2), () {
       for (final n in notifiers) {
         --n.value;
       }
