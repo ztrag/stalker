@@ -65,6 +65,13 @@ class _TickerTextState extends State<TickerText> {
   }
 
   @override
+  void dispose() {
+    event.dispose();
+    ticker.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: ticker,

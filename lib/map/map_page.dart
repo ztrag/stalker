@@ -226,7 +226,7 @@ class _MapPageState extends State<MapPage> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
                               child: Image.asset(
-                                  'assets/images/eye-left-fuzz.png'),
+                                  'assets/images/eye-left-fuzz-small.png'),
                             ),
                           ),
                           Positioned(
