@@ -10,12 +10,12 @@ final List<TickerThreshold<String>> kTickerTextThresholds = [
   ),
   TickerThreshold(
     time: const Duration(minutes: 1),
-    builder: (t) => '<1m',
+    builder: (t) => '<1min',
   ),
   TickerThreshold(
     time: const Duration(hours: 1),
     period: const Duration(minutes: 1),
-    builder: (t) => '${t!.inMinutes}m',
+    builder: (t) => '${t!.inMinutes}min',
   ),
   TickerThreshold(
     time: const Duration(days: 1),

@@ -14,6 +14,7 @@ import 'package:stalker/theme/loading_text.dart';
 import 'package:stalker/ticker/ticker.dart';
 import 'package:stalker/ticker/ticker_text.dart';
 import 'package:stalker/user/active_user.dart';
+import 'package:stalker/user/user_distance_from_stalker.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 import 'package:stalker/user/user_icon_widget.dart';
 import 'package:stalker/user/user_last_seen_image_notifier.dart';
@@ -185,6 +186,7 @@ class _MapPageState extends State<MapPage> {
                           style: Theme.of(context).textTheme.labelSmall,
                           textScaleFactor: 1,
                         ),
+                        UserDistanceFromStalker(user: widget.user),
                       ],
                     ),
                   ),
