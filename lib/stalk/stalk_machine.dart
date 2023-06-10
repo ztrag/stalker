@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:stalker/domain/user.dart';
-import 'package:stalker/location/position_fetcher.dart';
 import 'package:stalker/stalk/stalk_protocol.dart';
+import 'package:stalker/stalk/stalk_transmitter.dart';
 
 enum StalkMachineAction {
   sendingRequest,
@@ -52,8 +52,7 @@ class StalkMachine {
     _addToHistory(StalkMachineAction.sendingRequest);
     final stalkRequestFuture =
         StalkProtocol().sendMessage(target, StalkAction.stalkRequest);
-    StalkProtocol()
-        .sendPosition(target, await LocationFetcher.getCurrentPosition());
+    StalkTransmitter().sendTransmission(target);
     final result = await stalkRequestFuture;
 
     _addToHistory(result
@@ -71,7 +70,6 @@ class StalkMachine {
   }
 
   void _addToHistory(StalkMachineAction action) {
-    print('stalk-machine action ->$action');
     history.value = {...history.value, DateTime.now(): action};
   }
 

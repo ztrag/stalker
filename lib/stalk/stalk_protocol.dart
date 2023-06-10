@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
-import 'package:stalker/location/position_fetcher.dart';
 import 'package:stalker/stalk/stalk_message_hub.dart';
+import 'package:stalker/stalk/stalk_transmitter.dart';
 import 'package:stalker/user/active_user.dart';
 
 enum StalkAction {
@@ -51,7 +51,6 @@ class StalkProtocol {
   StalkProtocol();
 
   void handleFcm(RemoteMessage message) async {
-    print('[fcm] incoming -> ${message.data}');
     final db = await Db.db;
     final sender = message.data['f'];
     final users = await db.users.where().tokenEqualTo(sender).findAll();
@@ -83,21 +82,7 @@ class StalkProtocol {
         }
 
         sendMessage(message.sender, StalkAction.stalkRequestAck);
-
-        listener() {
-          final position = LocationFetcher.position.value;
-          if (position != null) {
-            sendPosition(message.sender, position);
-          }
-        }
-        print('Tracking location...');
-        LocationFetcher.trackLocation();
-        LocationFetcher.position.addListener(listener);
-        Future.delayed(const Duration(seconds: 10), () {
-          LocationFetcher.position.removeListener(listener);
-          LocationFetcher.stopTracking();
-          print('Tracking stopped');
-        });
+        StalkTransmitter().sendTransmission(message.sender);
         return;
       case StalkAction.stalkRequestAck:
         return;
@@ -156,7 +141,6 @@ class StalkProtocol {
       body: json,
     );
 
-    print('[fcm] outgoing -> $data ${result.statusCode}:${result.body}');
     if (result.statusCode == 200) {
       return true;
     }

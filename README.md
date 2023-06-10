@@ -13,13 +13,6 @@ Find someone.
 ### Icon + Splashscreen
 . Splashscreen same as home
 
-### UserIcon
-. Color vs faded vs black-white
-. Refresh on resume + lifecycle
-
-### Last seen
-. Refresh on resume + lifecycle
-
 ### EditUserPage
 . Apply for other users
 
