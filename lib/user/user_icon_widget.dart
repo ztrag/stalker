@@ -85,6 +85,7 @@ class _UserIconWidgetState extends State<UserIconWidget> {
         ? Image.memory(
             image,
             errorBuilder: (_, __, ___) => _errorWidget,
+            gaplessPlayback: true,
           )
         : _errorWidget;
   }

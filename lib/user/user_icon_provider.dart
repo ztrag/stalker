@@ -23,19 +23,23 @@ enum UserIconSize {
 class UserIconProps {
   final User user;
   final UserIconSize size;
-  final bool grayScale;
+  final num grayScale;
+  final double opacity;
 
   UserIconProps({
     required this.user,
     this.size = UserIconSize.original,
-    this.grayScale = false,
+    this.grayScale = 0,
+    this.opacity = 1.0,
   });
 
-  UserIconProps copyWith({User? user, UserIconSize? size, bool? grayScale}) {
+  UserIconProps copyWith(
+      {User? user, UserIconSize? size, num? grayScale, double? opacity}) {
     return UserIconProps(
       user: user ?? this.user,
       size: size ?? this.size,
       grayScale: grayScale ?? this.grayScale,
+      opacity: opacity ?? this.opacity,
     );
   }
 
@@ -43,21 +47,24 @@ class UserIconProps {
   int get hashCode =>
       user.id * UserIconSize.values.length +
       UserIconSize.values.indexOf(size) +
-      user.token.hashCode * (grayScale ? 7 : 11);
+      user.token.hashCode *
+          (grayScale + 1000).toInt() *
+          (opacity + 1000).toInt();
 
   @override
   bool operator ==(Object other) {
     return other is UserIconProps &&
         other.user.id == user.id &&
         other.size == size &&
-        other.grayScale == grayScale;
+        other.grayScale == grayScale &&
+        other.opacity == opacity;
   }
 }
 
 class UserIconProvider extends ChangeNotifier {
   static final UserIconProvider _instance = UserIconProvider._();
   final Map<UserIconProps, Uint8List?> _cache = {};
-  final Map<String, Future?> _processingQueue = {};
+  final Map<UserIconProps, Future?> _processingQueue = {};
 
   UserIconProvider._();
 
@@ -74,11 +81,9 @@ class UserIconProvider extends ChangeNotifier {
       return _cache[props];
     }
 
-    final path = '${await props.user.getIconPath(props.size)}'
-        '${props.grayScale ? '-g' : ''}';
-    final task = _processingQueue[path] ??= _fetch(props);
+    final task = _processingQueue[props] ??= _fetch(props);
     final result = await task;
-    _processingQueue[path] = null;
+    _processingQueue[props] = null;
     return result;
   }
 
@@ -87,7 +92,7 @@ class UserIconProvider extends ChangeNotifier {
       return _cache[props];
     }
 
-    if (props.grayScale) {
+    if (props.grayScale > 0 || props.opacity < 1) {
       return _cache[props] ??= await _fetchGrayscale(props);
     }
 
@@ -126,15 +131,20 @@ class UserIconProvider extends ChangeNotifier {
   }
 
   Future<Uint8List?> _fetchGrayscale(UserIconProps props) async {
-    final original = await fetch(props.copyWith(grayScale: false));
+    final original = await fetch(props.copyWith(grayScale: 0, opacity: 1));
     if (original == null) {
       return null;
     }
 
-    final decodePng = img.decodePng(original);
-    final grayscale = img.grayscale(decodePng!);
-    final encodePng = img.encodePng(grayscale);
-    return encodePng;
+    var processed = img.decodePng(original);
+    if (props.grayScale > 0) {
+      processed = img.grayscale(processed!, amount: props.grayScale);
+    }
+    if (props.opacity < 1) {
+      processed =
+          img.colorOffset(processed!, alpha: -255 * (1 - props.opacity));
+    }
+    return img.encodePng(processed!);
   }
 
   Future<Uint8List?> _fetchFromDisk(UserIconProps props) async {

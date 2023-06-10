@@ -6,6 +6,7 @@ import 'package:stalker/user/user_icon_provider.dart';
 class UserLastSeenImageNotifier extends ValueNotifier<UserIconProps> {
   final User user;
   final UserIconSize size;
+  final double baseOpacity;
 
   late final ValueNotifier<DateTime?> event =
       ValueNotifier(user.lastLocationTimestamp);
@@ -13,17 +14,25 @@ class UserLastSeenImageNotifier extends ValueNotifier<UserIconProps> {
   late final Ticker<UserIconProps> _ticker = Ticker(event, [
     TickerThreshold(
       time: const Duration(seconds: 10),
-      builder: (t) => UserIconProps(user: user, size: size),
+      builder: (t) =>
+          UserIconProps(user: user, size: size, opacity: baseOpacity),
     ),
     TickerThreshold(
       time: const Duration(seconds: 60),
-      builder: (t) => UserIconProps(user: user, size: size, grayScale: true),
+      builder: (t) => UserIconProps(
+          user: user, size: size, grayScale: 0.35, opacity: 0.9 * baseOpacity),
+    ),
+    TickerThreshold(
+      time: const Duration(minutes: 5),
+      builder: (t) => UserIconProps(
+          user: user, size: size, grayScale: 1, opacity: 0.8 * baseOpacity),
     ),
   ]);
 
   UserLastSeenImageNotifier({
     required this.user,
     required this.size,
+    this.baseOpacity = 1,
   }) : super(UserIconProps(user: user, size: size)) {
     _ticker.addListener(_onTick);
     _onTick();
