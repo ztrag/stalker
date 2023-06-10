@@ -3,7 +3,7 @@ import 'package:stalker/ticker/ticker.dart';
 
 typedef DurationToString = String Function(Duration timeSinceEvent);
 
-final List<TickerThreshold<String>> _kTickerThresholds = [
+final List<TickerThreshold<String>> kTickerTextThresholds = [
   TickerThreshold(
     time: const Duration(seconds: 10),
     builder: (t) => t == null ? '' : 'now',
@@ -56,7 +56,7 @@ class TickerText extends StatefulWidget {
 
 class _TickerTextState extends State<TickerText> {
   late final ValueNotifier<DateTime?> event = ValueNotifier(widget.event);
-  late final Ticker<String> ticker = Ticker(event, _kTickerThresholds);
+  late final Ticker<String> ticker = Ticker(event, kTickerTextThresholds);
 
   @override
   void didUpdateWidget(covariant TickerText oldWidget) {
