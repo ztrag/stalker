@@ -46,6 +46,7 @@ class UserLastSeenImageNotifier extends ValueNotifier<UserIconProps> {
   @override
   void dispose() {
     _ticker.removeListener(_onTick);
+    _ticker.dispose();
     super.dispose();
   }
 
