@@ -16,6 +16,16 @@ Find someone.
 ### EditUserPage
 . Apply for other users
 
+### MapPage
+. Smooth back transition
+
+### Notification
+. Show notification
+. Stop button
+. Navigate to MapPage
+. User image
+. Sound
+
 ### Chat
 . Chat Model / db.
 . Chat Protocol -> Send/receive and store in db.
@@ -23,3 +33,7 @@ Find someone.
 . ChatPage appBar -> Go to MagPage.
 . ChatPage chats -> Show chat history
 . HomePage -> Show last message.
+
+### iOS
+. Background
+. Google Maps

@@ -15,6 +15,7 @@ class TickerThreshold<T> {
 }
 
 class Ticker<T> extends ValueNotifier<T?> {
+  bool mounted = true;
   final ValueListenable<DateTime?> event;
   final List<TickerThreshold<T>> thresholds;
   int _tickCounter = 0;
@@ -26,11 +27,15 @@ class Ticker<T> extends ValueNotifier<T?> {
 
   @override
   void dispose() {
+    mounted = false;
     event.removeListener(_tick);
     super.dispose();
   }
 
   void _tick() {
+    if (!mounted) {
+      return;
+    }
     _tickCounter++;
     final checkTickCounter = _tickCounter;
     final eventTime = event.value;

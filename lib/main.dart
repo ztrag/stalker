@@ -9,9 +9,11 @@ void main() async {
   await Firebase.initializeApp();
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessage.listen((message) async {
-    StalkProtocol().handleFcm(message);
-  });
+  FirebaseMessaging.instance.getToken().then(
+        (value) => FirebaseMessaging.onMessage.listen(
+          (message) => StalkProtocol().handleFcm(message),
+        ),
+      );
 
   runApp(const StalkerApp());
 }
