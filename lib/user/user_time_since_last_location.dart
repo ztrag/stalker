@@ -1,10 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
-import 'package:stalker/live/live_data.dart';
+import 'package:stalker/live/live_data_builder.dart';
 import 'package:stalker/ticker/ticker_text.dart';
 
-class UserTimeSinceLastLocation extends StatefulWidget {
+class UserTimeSinceLastLocation extends StatelessWidget {
   final User user;
   final TextStyle? style;
   final bool includeSuffix;
@@ -19,34 +18,15 @@ class UserTimeSinceLastLocation extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<UserTimeSinceLastLocation> createState() =>
-      _UserTimeSinceLastLocationState();
-}
-
-class _UserTimeSinceLastLocationState extends State<UserTimeSinceLastLocation> {
-  late final LiveData<User> liveUser = LiveData(widget.user);
-
-  @override
-  void initState() {
-    super.initState();
-    Db.db.then((db) => liveUser.inCollection(db.users));
-  }
-
-  @override
-  void dispose() {
-    liveUser.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: liveUser,
-      builder: (_, __) => TickerText(
-        event: liveUser.value!.lastLocationTimestamp,
-        style: widget.style,
-        includeSuffix: widget.includeSuffix,
-        textScaleFactor: widget.textScaleFactor,
+    return LiveDataBuilder<User>(
+      initial: user,
+      prepare: (db, user) => user.inCollection(db.users),
+      builder: (user) => TickerText(
+        event: user?.lastLocationTimestamp,
+        style: style,
+        includeSuffix: includeSuffix,
+        textScaleFactor: textScaleFactor,
       ),
     );
   }

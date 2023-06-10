@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -69,6 +70,10 @@ class UserIconProvider extends ChangeNotifier {
   }
 
   Future<Uint8List?> fetch(UserIconProps props) async {
+    if (_cache[props] != null) {
+      return _cache[props];
+    }
+
     final path = '${await props.user.getIconPath(props.size)}'
         '${props.grayScale ? '-g' : ''}';
     final task = _processingQueue[path] ??= _fetch(props);

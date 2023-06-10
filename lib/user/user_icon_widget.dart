@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stalker/domain/user.dart';
+import 'package:stalker/live/live_data_builder.dart';
 import 'package:stalker/user/user_activity_widget.dart';
 import 'package:stalker/user/user_icon_provider.dart';
+import 'package:stalker/user/user_last_seen_image_notifier.dart';
 
 const double kUserIconSize = 60.0;
 
@@ -25,41 +27,49 @@ class UserIconWidget extends StatefulWidget {
 }
 
 class _UserIconWidgetState extends State<UserIconWidget> {
-  Uint8List? _image;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetch();
-    UserIconProvider().addListener(_fetch);
-  }
-
-  @override
-  void dispose() {
-    UserIconProvider().removeListener(_fetch);
-    super.dispose();
-  }
+  late UserLastSeenImageNotifier notifier = UserLastSeenImageNotifier(
+    user: widget.user,
+    size: widget.size,
+  );
 
   @override
   void didUpdateWidget(covariant UserIconWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.image != widget.image) {
-      _fetch();
+    if (widget.user != oldWidget.user || widget.size != oldWidget.size) {
+      notifier.dispose();
+      notifier =
+          UserLastSeenImageNotifier(user: widget.user, size: widget.size);
     }
   }
 
-  void _fetch() async {
-    _image = widget.image ??
-        await UserIconProvider()
-            .fetch(UserIconProps(user: widget.user, size: widget.size));
-    setState(() {});
+  @override
+  void dispose() {
+    notifier.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(child: _iconImage),
+        Positioned.fill(
+          child: widget.image != null
+              ? _getIconImage(widget.image)
+              : LiveDataBuilder<User>(
+                  initial: widget.user,
+                  prepare: (db, liveUser) => liveUser.inCollection(db.users),
+                  builder: (user) {
+                    notifier.event.value = user?.lastLocationTimestamp;
+                    return ValueListenableBuilder<UserIconProps>(
+                      valueListenable: notifier,
+                      builder: (_, props, __) => FutureBuilder<Uint8List?>(
+                        future: UserIconProvider().fetch(props),
+                        builder: (_, snapshot) => _getIconImage(snapshot.data),
+                      ),
+                    );
+                  },
+                ),
+        ),
         Positioned(
           bottom: 0,
           left: 0,
@@ -70,10 +80,10 @@ class _UserIconWidgetState extends State<UserIconWidget> {
     );
   }
 
-  Widget get _iconImage {
-    return _image != null
+  Widget _getIconImage(Uint8List? image) {
+    return image != null
         ? Image.memory(
-            _image!,
+            image,
             errorBuilder: (_, __, ___) => _errorWidget,
           )
         : _errorWidget;
