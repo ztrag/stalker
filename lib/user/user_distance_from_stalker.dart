@@ -48,8 +48,6 @@ class UserDistanceFromStalker extends StatelessWidget {
     } else if (distance > 1000) {
       // i.e. 1.1km
       return '${(distance / 1000).toStringAsFixed(1)}km';
-    } else if (distance < 5) {
-      return 'here';
     }
     return '${(distance).toStringAsFixed(0)}m';
   }
