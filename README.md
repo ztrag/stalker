@@ -24,11 +24,10 @@ Find someone.
 . Smooth back transition
 
 ### Notification
-. Show notification
-. Stop button
-. Navigate to MapPage
-. User image
+. User image file://path/to/image-asset.png in bigpicture
 . Sound
+. Layout multiple messages and stuff
+. Send message from notif
 
 ### Chat
 . Chat Model / db.
@@ -37,6 +36,9 @@ Find someone.
 . ChatPage appBar -> Go to MagPage.
 . ChatPage chats -> Show chat history
 . HomePage -> Show last message.
+
+### Continuous Stalk
+. Keep on stalking
 
 ### Missed Stalk Request Task
 . Schedule for retry through a task.
