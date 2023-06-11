@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stalker/alien/alien_encription.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
+import 'package:stalker/location/position_fetcher.dart';
 
 class AddUserForm extends StatefulWidget {
   final VoidCallback onDone;
@@ -93,5 +94,6 @@ class _AddUserFormState extends State<AddUserForm> {
         return db.users.put(saved);
       });
     }
+    PositionFetcher.checkPermissions();
   }
 }

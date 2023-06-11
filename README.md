@@ -10,6 +10,10 @@ Find someone.
 ### Art
 . Map Skull
 
+### UserIcon
+. No icon -> map
+. No icon -> widget
+
 ### Icon + Splashscreen
 . Splashscreen same as home
 
@@ -33,6 +37,12 @@ Find someone.
 . ChatPage appBar -> Go to MagPage.
 . ChatPage chats -> Show chat history
 . HomePage -> Show last message.
+
+### Missed Stalk Request Task
+. Schedule for retry through a task.
+
+### Disable
+. Send delete-last-location fcm.
 
 ### iOS
 . Background

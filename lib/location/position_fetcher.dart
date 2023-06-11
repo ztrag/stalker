@@ -2,40 +2,31 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:stalker/logger/logger.dart';
 
-class LocationFetcher {
+class PositionFetcher {
   static final ValueNotifier<Position?> position = ValueNotifier(null);
   static StreamSubscription<Position?>? _inputStreamSubscription;
 
-  static Future<bool> checkPermissions() async {
-    final locationPermission = await Geolocator.requestPermission();
-    return locationPermission == LocationPermission.always ||
-        locationPermission == LocationPermission.whileInUse;
+  static Future<void> checkPermissions() async {
+    final result = await Geolocator.requestPermission();
+    final hasPermissions = result == LocationPermission.always ||
+        result == LocationPermission.whileInUse;
+    if (!hasPermissions) {
+      slog('[location-fetcher] Has no permissions');
+      // TODO show toast or something.
+    }
   }
 
-  static void trackLocation() async {
-    if (!(await checkPermissions())) {
-      return;
-    }
-
+  static void startTracking() async {
     _inputStreamSubscription ??=
         Geolocator.getPositionStream(locationSettings: const LocationSettings())
             .listen((event) {
       position.value = event;
     });
-    Geolocator.getLastKnownPosition().then((value) {
-      if (value != null) {
-        position.value = value;
-      }
+    Geolocator.getCurrentPosition().then((value) {
+      position.value = value;
     });
-  }
-
-  static Future<Position> getCurrentPosition() async {
-    if (!(await checkPermissions())) {
-      throw 'No permission';
-    }
-
-    return Geolocator.getCurrentPosition();
   }
 
   static void stopTracking() {

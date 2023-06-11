@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
+import 'package:stalker/logger/logger.dart';
 import 'package:stalker/stalk/stalk_message_hub.dart';
 import 'package:stalker/stalk/stalk_transmitter.dart';
 import 'package:stalker/user/active_user.dart';
@@ -48,9 +49,11 @@ class StalkProtocol {
 
   static final Stream<StalkMessage> messages = _messageStreamController.stream;
 
-  StalkProtocol();
+  final bool isInBackground;
 
-  void handleFcm(RemoteMessage message) async {
+  StalkProtocol([this.isInBackground = false]);
+
+  Future<void> handleFcm(RemoteMessage message) async {
     final db = await Db.db;
     final sender = message.data['f'];
     final users = await db.users.where().tokenEqualTo(sender).findAll();
@@ -58,9 +61,10 @@ class StalkProtocol {
       // FIXME Spam feature
       return;
     }
+
     // FIXME Filter targets with permission.
     final stalkAction = StalkAction.fromCode(int.parse(message.data['c']));
-    _handleStalkMessage(StalkMessage(
+    return _handleStalkMessage(StalkMessage(
       action: stalkAction,
       sender: users.last,
       target: ActiveUser().value!,
@@ -68,7 +72,7 @@ class StalkProtocol {
     ));
   }
 
-  void _handleStalkMessage(StalkMessage message) async {
+  Future<void> _handleStalkMessage(StalkMessage message) async {
     _streamMessageToUi(message);
     switch (message.action) {
       case StalkAction.stalkRequest:
@@ -82,13 +86,12 @@ class StalkProtocol {
         }
 
         sendMessage(message.sender, StalkAction.stalkRequestAck);
-        StalkTransmitter().sendTransmission(message.sender);
-        return;
+        return StalkTransmitter()
+            .sendTransmission(message.sender, isInBackground);
       case StalkAction.stalkRequestAck:
         return;
       case StalkAction.locationShare:
-        _storeLocation(message);
-        break;
+        return _storeLocation(message);
     }
   }
 
@@ -131,6 +134,7 @@ class StalkProtocol {
         "to": token,
       },
     );
+    slog('[fcm] outgoing -> $data');
     final result = await http.post(
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: <String, String>{
@@ -147,12 +151,12 @@ class StalkProtocol {
     return false;
   }
 
-  void _storeLocation(StalkMessage message) async {
+  Future<void> _storeLocation(StalkMessage message) async {
     final positionData = jsonDecode(message.data['d'])['position'];
     final target = message.sender;
 
     final db = await Db.db;
-    db.writeTxn(() async {
+    await db.writeTxn(() async {
       final saved = await db.users.get(target.id);
       saved!.lastLocationLatitude = positionData['la'];
       saved.lastLocationLongitude = positionData['lo'];

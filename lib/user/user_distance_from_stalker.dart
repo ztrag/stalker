@@ -18,20 +18,14 @@ class UserDistanceFromStalker extends StatelessWidget {
         initial: user,
         prepare: (db, user) => user.inCollection(db.users),
         builder: (user) {
-          if (!(user?.hasLocation ?? false) ||
-              !(ActiveUser().value?.hasLocation ?? false)) {
+          final distance = getDistanceFromUser(user);
+          if (distance == null) {
             return Wrap();
           }
-          final distance = Geolocator.distanceBetween(
-            ActiveUser().value!.lastLocationLatitude!,
-            ActiveUser().value!.lastLocationLongitude!,
-            user!.lastLocationLatitude!,
-            user.lastLocationLongitude!,
-          );
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: Text(
-              _prettyDistance(distance),
+              distance,
               style: Theme.of(context).textTheme.labelSmall,
               textScaleFactor: 0.9,
             ),
@@ -41,7 +35,22 @@ class UserDistanceFromStalker extends StatelessWidget {
     );
   }
 
-  String _prettyDistance(double distance) {
+  static String? getDistanceFromUser(User? user) {
+    if (!(user?.hasLocation ?? false) ||
+        !(ActiveUser().value?.hasLocation ?? false)) {
+      return null;
+    }
+    return _prettyDistance(
+      Geolocator.distanceBetween(
+        ActiveUser().value!.lastLocationLatitude!,
+        ActiveUser().value!.lastLocationLongitude!,
+        user!.lastLocationLatitude!,
+        user.lastLocationLongitude!,
+      ),
+    );
+  }
+
+  static String _prettyDistance(double distance) {
     if (distance > 10000) {
       // i.e. 10km 100km
       return '${(distance / 1000).toStringAsFixed(0)}km';

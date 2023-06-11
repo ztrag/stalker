@@ -32,7 +32,8 @@ class User with HasId {
   bool isEnabled = true;
 
   @ignore
-  String get displayName => name?.isNotEmpty ?? false ? name! : token!.encrypt;
+  String get displayName =>
+      name?.isNotEmpty ?? false ? name! : token!.substring(0, 8).encrypt;
 
   @ignore
   bool get hasLocation =>
