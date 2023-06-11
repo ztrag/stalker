@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -73,21 +74,22 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
           child: Column(
             children: [
               SizedBox(
-                height: kUserIconSize,
+                height: 140,
                 child: Row(
                   children: [
                     SizedBox(
-                      width: kUserIconSize,
+                      width: 140,
                       child: InkWell(
                         onTap: userIconPicker.pick,
-                        child: ValueListenableBuilder<Uint8List?>(
+                        child: ValueListenableBuilder<UserIconPickerResult?>(
                           valueListenable: userIconPicker,
                           builder: (_, __, ___) => Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: UserIconWidget(
                               user: editUser,
                               errorWidget: const Icon(Icons.image_outlined),
-                              image: userIconPicker.value,
+                              image: userIconPicker.value?.pngBytes,
+                              size: UserIconSize.original,
                             ),
                           ),
                         ),
@@ -177,18 +179,21 @@ class _EditActiveUserPageState extends State<EditActiveUserPage> {
     }
 
     final filepath = await editUser.getIconPath(UserIconSize.original);
-    final saved = await File(filepath).writeAsBytes(icon);
-    for (final size in UserIconSize.values) {
-      if (size != UserIconSize.original) {
-        File(await editUser.getIconPath(size)).delete();
-      }
-    }
+    final png = await icon.image.toByteData(format: ui.ImageByteFormat.png);
+    final saved =
+        await File(filepath).writeAsBytes(Uint8List.view(png!.buffer));
+    // TODO Delete if we handle cached resized images in disk.
+    // for (final size in UserIconSize.values) {
+    //   if (size != UserIconSize.original) {
+    //     File(await editUser.getIconPath(size)).delete();
+    //   }
+    // }
     editUser.hasLocalIcon = true;
 
     final db = await Db.db;
     db.writeTxn(() => db.users.put(editUser));
 
-    UserIconProvider().cache(editUser, icon);
+    UserIconProvider().cache(editUser, Image.memory(icon.pngBytes));
 
     final ref = FirebaseStorage.instance.ref('${editUser.token!.hashCode}');
     await ref.putFile(saved);

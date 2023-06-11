@@ -19,7 +19,7 @@ class UserIconWidget extends StatefulWidget {
     required this.user,
     this.errorWidget,
     this.image,
-    this.size = UserIconSize.large,
+    this.size = UserIconSize.medium,
   }) : super(key: key);
 
   @override
@@ -62,9 +62,18 @@ class _UserIconWidgetState extends State<UserIconWidget> {
                     notifier.event.value = user?.lastLocationTimestamp;
                     return ValueListenableBuilder<UserIconProps>(
                       valueListenable: notifier,
-                      builder: (_, props, __) => FutureBuilder<Uint8List?>(
-                        future: UserIconProvider().fetch(props),
-                        builder: (_, snapshot) => _getIconImage(snapshot.data),
+                      builder: (_, props, __) => AnimatedBuilder(
+                        animation: UserIconProvider(),
+                        builder: (_, child) => FutureBuilder<Image?>(
+                          future: UserIconProvider().fetch(props),
+                          builder: (_, snapshot) => ColorFiltered(
+                            colorFilter: _getMatrix(props.grayScale),
+                            child: Opacity(
+                              opacity: props.opacity,
+                              child: snapshot.data ?? _errorWidget,
+                            ),
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -92,5 +101,63 @@ class _UserIconWidgetState extends State<UserIconWidget> {
 
   Widget get _errorWidget {
     return widget.errorWidget ?? const Icon(Icons.image_not_supported_outlined);
+  }
+
+  ColorFilter _getMatrix(double grayscale) {
+    const identityMatrix = <double>[
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+    ];
+    const grayMatrix = <double>[
+      0.2126,
+      0.7152,
+      0.0722,
+      0,
+      0,
+      0.2126,
+      0.7152,
+      0.0722,
+      0,
+      0,
+      0.2126,
+      0.7152,
+      0.0722,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+    ];
+    return ColorFilter.matrix(
+      grayscale <= 0
+          ? identityMatrix
+          : (grayscale >= 1
+              ? grayMatrix
+              : (List<double>.generate(
+                  identityMatrix.length,
+                  (i) =>
+                      identityMatrix[i] * (1 - grayscale) +
+                      grayMatrix[i] * grayscale))),
+    );
   }
 }
