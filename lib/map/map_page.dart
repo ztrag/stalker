@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image/image.dart' as img;
 import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
@@ -38,7 +40,13 @@ class _MapPageState extends State<MapPage> {
   late final UserLastSeenImageNotifier userLastSeenImageNotifier =
       UserLastSeenImageNotifier(
     user: widget.user,
-    size: UserIconSize.medium,
+    size: UserIconSize.map,
+    baseOpacity: 0.8,
+  );
+  late final UserLastSeenImageNotifier stalkerLastSeenImageNotifier =
+      UserLastSeenImageNotifier(
+    user: ActiveUser().value!,
+    size: UserIconSize.map,
     baseOpacity: 0.8,
   );
   late final ValueNotifier<DateTime?> userLastSeenTextTickerNotifier =
@@ -51,7 +59,12 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     _monitorTarget();
-    userLastSeenImageNotifier.addListener(_fetchIcons);
+    userLastSeenImageNotifier.addListener(
+      () => _fetchIconForUser(userLastSeenImageNotifier.value),
+    );
+    stalkerLastSeenImageNotifier.addListener(
+      () => _fetchIconForUser(stalkerLastSeenImageNotifier.value),
+    );
     _fetchIcons();
   }
 
@@ -61,6 +74,7 @@ class _MapPageState extends State<MapPage> {
     stalkMachine.dispose();
     userLastSeenImageNotifier.dispose();
     userLastSeenTextTicker.dispose();
+    stalkerLastSeenImageNotifier.dispose();
     super.dispose();
   }
 
@@ -70,17 +84,23 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _fetchIcons() async {
-    await _fetchIconForUser(
-        UserIconProps(user: ActiveUser().value!, size: UserIconSize.medium));
+    await _fetchIconForUser(stalkerLastSeenImageNotifier.value);
     await _fetchIconForUser(userLastSeenImageNotifier.value);
-    setState(() {});
   }
 
   Future<void> _fetchIconForUser(UserIconProps props) async {
     final result = await UserIconProvider().fetch(props);
-    if (result != null) {
-      cachedImages[props.user.id] = result;
+    final bitmapHelper = await BitmapHelper.fromProvider(result.image);
+    final headed = bitmapHelper.buildHeaded();
+    if (props.grayScale == 0) {
+      cachedImages[props.user.id] = headed;
+    } else {
+      final image = img.decodeImage(headed);
+      final grayScale = img.grayscale(image!, amount: props.grayScale);
+      cachedImages[props.user.id] = img.encodePng(grayScale);
+      // TODO cache image processing
     }
+    setState(() {});
   }
 
   @override
@@ -107,8 +127,7 @@ class _MapPageState extends State<MapPage> {
           body: Platform.isIOS
               ? Container()
               : AnimatedBuilder(
-                  animation:
-                      Listenable.merge([ActiveUser(), userLastSeenTextTicker]),
+                  animation: ActiveUser(),
                   builder: (_, __) {
                     return GoogleMap(
                       onMapCreated: (controller) {
@@ -121,6 +140,8 @@ class _MapPageState extends State<MapPage> {
                       markers: _getUsersForMarkers()
                           .map((e) => Marker(
                                 markerId: MarkerId('${e.id}'),
+                                alpha: userLastSeenImageNotifier.value.opacity *
+                                    0.8,
                                 position: LatLng(
                                   e.lastLocationLatitude!,
                                   e.lastLocationLongitude!,
@@ -158,10 +179,12 @@ class _MapPageState extends State<MapPage> {
                         ...[widget.user, ActiveUser().value!]
                             .map(
                               (e) => IconButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  final db = await Db.db;
+                                  final user = await db.users.get(e.id);
                                   mapController?.moveCamera(
                                       CameraUpdate.newLatLng(
-                                          _latLngFromUser(e)));
+                                          _latLngFromUser(user!)));
                                 },
                                 icon: SizedBox(
                                   width: 30,

@@ -4,9 +4,6 @@ Find someone.
 
 ## TODO
 
-### Background/Notification
-. Test background fcm.
-
 ### Art
 . Map Skull
 

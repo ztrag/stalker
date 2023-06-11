@@ -9,7 +9,14 @@ import 'package:image_picker/image_picker.dart';
 
 const int _kSize = 512;
 
-class UserIconPicker extends ValueNotifier<Uint8List?> {
+class UserIconPickerResult {
+  Uint8List pngBytes;
+  ui.Image image;
+
+  UserIconPickerResult(this.pngBytes, this.image);
+}
+
+class UserIconPicker extends ValueNotifier<UserIconPickerResult?> {
   UserIconPicker([super.value]);
 
   void pick() async {
@@ -28,7 +35,9 @@ class UserIconPicker extends ValueNotifier<Uint8List?> {
     final cropped = await _cropCircle(
         resized, ui.Size(_kSize.toDouble(), _kSize.toDouble()));
 
-    value = cropped;
+    final byteData =
+        await cropped.toByteData(format: ui.ImageByteFormat.png);
+    value = UserIconPickerResult(byteData!.buffer.asUint8List(), cropped);
   }
 
   Future<ui.Image> _resizeAndConvertImage(
@@ -43,7 +52,7 @@ class UserIconPicker extends ValueNotifier<Uint8List?> {
     return frameInfo.image;
   }
 
-  Future<Uint8List> _cropCircle(ui.Image image, ui.Size size) async {
+  Future<ui.Image> _cropCircle(ui.Image image, ui.Size size) async {
     final pictureRecorder = ui.PictureRecorder();
     final canvas = ui.Canvas(pictureRecorder);
     final paint = ui.Paint();
@@ -52,9 +61,7 @@ class UserIconPicker extends ValueNotifier<Uint8List?> {
     _drawCircleCrop(image, size, canvas);
 
     final recordedPicture = pictureRecorder.endRecording();
-    ui.Image img = await recordedPicture.toImage(image.width, image.height);
-    final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
-    return byteData!.buffer.asUint8List();
+    return recordedPicture.toImage(image.width, image.height);
   }
 
   Canvas _drawCircleCrop(ui.Image image, ui.Size size, ui.Canvas canvas) {
