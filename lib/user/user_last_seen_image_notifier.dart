@@ -13,7 +13,7 @@ class UserLastSeenImageNotifier extends ValueNotifier<UserIconProps> {
 
   late final Ticker<UserIconProps> _ticker = Ticker(event, [
     TickerThreshold(
-      time: const Duration(seconds: 10),
+      time: const Duration(seconds: 20),
       builder: (t) =>
           UserIconProps(user: user, size: size, opacity: baseOpacity),
     ),

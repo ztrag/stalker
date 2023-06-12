@@ -5,7 +5,7 @@ typedef DurationToString = String Function(Duration timeSinceEvent);
 
 final List<TickerThreshold<String>> kTickerTextThresholds = [
   TickerThreshold(
-    time: const Duration(seconds: 10),
+    time: const Duration(seconds: 20),
     builder: (t) => t == null ? '' : 'now',
   ),
   TickerThreshold(

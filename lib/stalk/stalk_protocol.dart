@@ -86,8 +86,8 @@ class StalkProtocol {
         }
 
         sendMessage(message.sender, StalkAction.stalkRequestAck);
-        return StalkTransmitter()
-            .sendTransmission(message.sender, isInBackground);
+        return StalkTransmitter(message.sender, isInBackground)
+            .sendTransmission();
       case StalkAction.stalkRequestAck:
         return;
       case StalkAction.locationShare:

@@ -76,7 +76,7 @@ class StalkMachine {
     _addToHistory(StalkMachineAction.sendingRequest);
     final stalkRequestFuture =
         StalkProtocol().sendMessage(target, StalkAction.stalkRequest);
-    StalkTransmitter().sendTransmission(target);
+    StalkTransmitter(target).sendTransmission();
     final result = await stalkRequestFuture;
 
     _addToHistory(result
@@ -91,7 +91,7 @@ class StalkMachine {
 
   void toggleContinuousMode() async {
     // TODO -> Make sure foreground notification stays on withot refreshing
-    const period = Duration(seconds: 7);
+    const period = Duration(seconds: 15);
     final elapsed = DateTime.now().difference(_currentSessionStartTime!);
 
     isInContinuousMode.value = !isInContinuousMode.value;
