@@ -238,6 +238,8 @@ class _MapPageState extends State<MapPage> {
                       onPressed: () {
                         if (stalkMachine.isAvailable.value) {
                           stalkMachine.stalk();
+                        } else {
+                          stalkMachine.toggleContinuousMode();
                         }
                       },
                       child: Stack(
@@ -261,6 +263,15 @@ class _MapPageState extends State<MapPage> {
                               ]),
                               builder: (_, __) => _getStalkStateIcon(),
                             ),
+                          ),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: stalkMachine.isInContinuousMode,
+                            builder: (_, value, child) => value
+                                ? const Positioned(
+                                    top: 1,
+                                    child: Text('∞', textScaleFactor: 0.7),
+                                  )
+                                : Wrap(),
                           ),
                         ],
                       ),

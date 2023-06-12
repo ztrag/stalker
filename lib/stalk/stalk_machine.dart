@@ -21,11 +21,19 @@ class StalkMachine {
   final ValueNotifier<bool> hasSent = ValueNotifier(false);
   final ValueNotifier<bool> hasReceivedAck = ValueNotifier(false);
   final ValueNotifier<bool> hasReceivedLocation = ValueNotifier(false);
+  final ValueNotifier<bool> isInContinuousMode = ValueNotifier(false);
+  DateTime? _currentSessionStartTime;
+  int _continuousSessionCount = 0;
 
   StalkMachine(this.target);
 
   void dispose() {
     _messagesWatch?.cancel();
+    isAvailable.dispose();
+    hasSent.dispose();
+    hasReceivedAck.dispose();
+    hasReceivedLocation.dispose();
+    isInContinuousMode.dispose();
   }
 
   void _handleMessage(StalkMessage message) {
@@ -46,8 +54,24 @@ class StalkMachine {
     }
   }
 
-  void stalk() async {
-    _resetAvailability();
+  void stalk() {
+    _startSession();
+    _stalk();
+  }
+
+  void _startSession() {
+    _currentSessionStartTime = DateTime.now();
+    isAvailable.value = false;
+    hasSent.value = false;
+    hasReceivedAck.value = false;
+    hasReceivedLocation.value = false;
+    isInContinuousMode.value = false;
+    Future.delayed(const Duration(seconds: 10), () {
+      isAvailable.value = !isInContinuousMode.value;
+    });
+  }
+
+  void _stalk() async {
     _messagesWatch ??= StalkProtocol.messages.listen(_handleMessage);
     _addToHistory(StalkMachineAction.sendingRequest);
     final stalkRequestFuture =
@@ -65,19 +89,32 @@ class StalkMachine {
     hasSent.value = true;
   }
 
+  void toggleContinuousMode() async {
+    // TODO -> Make sure foreground notification stays on withot refreshing
+    const period = Duration(seconds: 7);
+    final elapsed = DateTime.now().difference(_currentSessionStartTime!);
+
+    isInContinuousMode.value = !isInContinuousMode.value;
+    if (!isInContinuousMode.value) {
+      isAvailable.value = true;
+      return;
+    }
+
+    final session = ++_continuousSessionCount;
+    var firstSleep = period < elapsed ? const Duration() : (period - elapsed);
+    await Future.delayed(firstSleep);
+    while (isInContinuousMode.value && session == _continuousSessionCount) {
+      hasSent.value = false;
+      _stalk();
+      await Future.delayed(period);
+    }
+  }
+
   void ack() {
     _addToHistory(StalkMachineAction.ackRequest);
   }
 
   void _addToHistory(StalkMachineAction action) {
     history.value = {...history.value, DateTime.now(): action};
-  }
-
-  void _resetAvailability() {
-    isAvailable.value = false;
-    hasSent.value = false;
-    hasReceivedAck.value = false;
-    hasReceivedLocation.value = false;
-    Future.delayed(const Duration(seconds: 10), () => isAvailable.value = true);
   }
 }

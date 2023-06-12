@@ -7,10 +7,6 @@ Find someone.
 ### Art
 . Map Skull
 
-### UserIcon
-. No icon -> map
-. No icon -> widget
-
 ### Icon + Splashscreen
 . Splashscreen same as home
 
