@@ -15,7 +15,8 @@ import 'package:stalker/user/active_user.dart';
 enum StalkAction {
   stalkRequest(1),
   stalkRequestAck(2),
-  locationShare(3);
+  locationShare(3),
+  stalkRequestInterrupt(4);
 
   final int code;
 
@@ -87,11 +88,15 @@ class StalkProtocol {
 
         sendMessage(message.sender, StalkAction.stalkRequestAck);
         return StalkTransmitter(message.sender, isInBackground)
-            .sendTransmission();
+            .sendTransmission(message.sender);
       case StalkAction.stalkRequestAck:
         return;
       case StalkAction.locationShare:
         return _storeLocation(message);
+      case StalkAction.stalkRequestInterrupt:
+        StalkTransmitter(message.sender, isInBackground)
+            .interruptTransmission();
+        return;
     }
   }
 

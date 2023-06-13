@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/live/live_data_builder.dart';
+import 'package:stalker/stalk/stalk_transmitter.dart';
 import 'package:stalker/user/active_user.dart';
 
 class UserEnabledSwitch extends StatelessWidget {
@@ -18,6 +19,12 @@ class UserEnabledSwitch extends StatelessWidget {
       saved!.isEnabled = value ?? !saved.isEnabled;
       return db.users.put(saved);
     });
+    await ActiveUser().load();
+    if (user.id == ActiveUser().value!.id) {
+      StalkTransmitter.interruptAllTransmission();
+    } else {
+      StalkTransmitter(user).interruptTransmission();
+    }
   }
 
   @override

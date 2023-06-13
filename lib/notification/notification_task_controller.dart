@@ -4,6 +4,7 @@ import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/map/map_page.dart';
 import 'package:stalker/notification/stalker_notification_channel.dart';
+import 'package:stalker/stalk/stalk_transmitter.dart';
 import 'package:stalker/stalker_app.dart';
 
 class NotificationTaskController {
@@ -45,6 +46,7 @@ class NotificationTaskController {
           db.users.put(u);
           return u;
         });
+        StalkTransmitter(user).interruptTransmission();
       }
 
       // TODO if already in MapPage, do nothing... Named routes?

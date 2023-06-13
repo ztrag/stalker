@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stalker/domain/transmission.dart';
 import 'package:stalker/domain/user.dart';
 
 class Db {
@@ -8,7 +9,10 @@ class Db {
   static Future<Isar> _open() async {
     final dir = await getApplicationDocumentsDirectory();
     return Isar.open(
-      [UserSchema],
+      [
+        UserSchema,
+        TransmissionSchema,
+      ],
       directory: dir.path,
     );
   }

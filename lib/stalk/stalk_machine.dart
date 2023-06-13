@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/stalk/stalk_protocol.dart';
 import 'package:stalker/stalk/stalk_transmitter.dart';
+import 'package:stalker/user/active_user.dart';
 
 enum StalkMachineAction {
   sendingRequest,
@@ -51,6 +52,10 @@ class StalkMachine {
       case StalkAction.locationShare:
         hasReceivedLocation.value = true;
         return;
+      case StalkAction.stalkRequestInterrupt:
+        isInContinuousMode.value = false;
+        StalkTransmitter(target).interruptTransmission();
+        break;
     }
   }
 
@@ -68,6 +73,9 @@ class StalkMachine {
     isInContinuousMode.value = false;
     Future.delayed(const Duration(seconds: 10), () {
       isAvailable.value = !isInContinuousMode.value;
+      if (isAvailable.value) {
+        _interruptSession();
+      }
     });
   }
 
@@ -76,7 +84,7 @@ class StalkMachine {
     _addToHistory(StalkMachineAction.sendingRequest);
     final stalkRequestFuture =
         StalkProtocol().sendMessage(target, StalkAction.stalkRequest);
-    StalkTransmitter(target).sendTransmission();
+    StalkTransmitter(target).sendTransmission(ActiveUser().value!);
     final result = await stalkRequestFuture;
 
     _addToHistory(result
@@ -90,13 +98,13 @@ class StalkMachine {
   }
 
   void toggleContinuousMode() async {
-    // TODO -> Make sure foreground notification stays on withot refreshing
-    const period = Duration(seconds: 15);
+    const period = Duration(seconds: 10);
     final elapsed = DateTime.now().difference(_currentSessionStartTime!);
 
     isInContinuousMode.value = !isInContinuousMode.value;
     if (!isInContinuousMode.value) {
       isAvailable.value = true;
+      _interruptSession();
       return;
     }
 
@@ -116,5 +124,10 @@ class StalkMachine {
 
   void _addToHistory(StalkMachineAction action) {
     history.value = {...history.value, DateTime.now(): action};
+  }
+
+  void _interruptSession() {
+    StalkTransmitter(target).interruptTransmission();
+    StalkProtocol().sendMessage(target, StalkAction.stalkRequestInterrupt);
   }
 }
