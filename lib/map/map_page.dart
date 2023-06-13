@@ -54,6 +54,7 @@ class _MapPageState extends State<MapPage> {
   late final Ticker<String> userLastSeenTextTicker =
       Ticker(userLastSeenTextTickerNotifier, kTickerTextThresholds);
   final ValueNotifier<double> fabOpacity = ValueNotifier(1);
+  bool hasCentered = false;
 
   @override
   void initState() {
@@ -129,15 +130,18 @@ class _MapPageState extends State<MapPage> {
               : AnimatedBuilder(
                   animation: ActiveUser(),
                   builder: (_, __) {
+                    final usersForMarkers = _getUsersForMarkers();
+                    _maybeCenter(usersForMarkers);
                     return GoogleMap(
                       onMapCreated: (controller) {
                         mapController = controller;
+                        _maybeCenter(usersForMarkers);
                         controller.setMapStyle(
                             Theme.of(context).brightness == Brightness.dark
                                 ? kDarkMap
                                 : kLightMap);
                       },
-                      markers: _getUsersForMarkers()
+                      markers: usersForMarkers
                           .map((e) => Marker(
                                 markerId: MarkerId('${e.id}'),
                                 alpha: userLastSeenImageNotifier.value.opacity *
@@ -155,7 +159,7 @@ class _MapPageState extends State<MapPage> {
                       zoomControlsEnabled: false,
                       onTap: (latLng) => fabOpacity.value = 1,
                       initialCameraPosition: CameraPosition(
-                        target: _latLngFromUser(liveUser.value ?? User()),
+                        target: _centerLatLng(),
                         zoom: 16,
                       ),
                     );
@@ -176,7 +180,7 @@ class _MapPageState extends State<MapPage> {
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: Column(
                       children: [
-                        ...[widget.user, ActiveUser().value!]
+                        ...[ActiveUser().value!, widget.user]
                             .map(
                               (e) => IconButton(
                                 onPressed: () async {
@@ -319,6 +323,54 @@ class _MapPageState extends State<MapPage> {
       if (cachedImages[target.id] != null && target.hasLocation) target,
       if (cachedImages[stalker.id] != null && stalker.hasLocation) stalker,
     ];
+  }
+
+  LatLng _centerLatLng() {
+    final users = [
+      if (ActiveUser().value?.hasLocation ?? false) ActiveUser().value!,
+      if (liveUser.value?.hasLocation ?? false) liveUser.value!,
+    ];
+    if (users.isEmpty) {
+      return const LatLng(45.529203417794825, -122.69094861252296);
+    }
+
+    final latLng = users
+        .map((e) => LatLng(e.lastLocationLatitude!, e.lastLocationLongitude!));
+    return LatLng(
+      latLng.map((e) => e.latitude).reduce((x, y) => x + y) / latLng.length,
+      latLng.map((e) => e.longitude).reduce((x, y) => x + y) / latLng.length,
+    );
+  }
+
+  static LatLngBounds boundsFromLatLngList(List<LatLng> list) {
+    var x0 = list.first.latitude;
+    var x1 = list.first.latitude;
+    var y0 = list.first.longitude;
+    var y1 = list.first.longitude;
+    for (LatLng latLng in list) {
+      if (latLng.latitude > x1) x1 = latLng.latitude;
+      if (latLng.latitude < x0) x0 = latLng.latitude;
+      if (latLng.longitude > y1) y1 = latLng.longitude;
+      if (latLng.longitude < y0) y0 = latLng.longitude;
+    }
+    return LatLngBounds(northeast: LatLng(x1, y1), southwest: LatLng(x0, y0));
+  }
+
+  void _maybeCenter(List<User> usersForMarkers) async {
+    if (hasCentered) {
+      return;
+    }
+
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (mapController != null && usersForMarkers.length > 1 && !hasCentered) {
+      mapController!.moveCamera(CameraUpdate.newLatLngBounds(
+          boundsFromLatLngList(usersForMarkers
+              .map((e) =>
+                  LatLng(e.lastLocationLatitude!, e.lastLocationLongitude!))
+              .toList()),
+          100));
+      hasCentered = true;
+    }
   }
 }
 
