@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image/image.dart' as img;
@@ -9,6 +8,7 @@ import 'package:isar/isar.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/live/live_data.dart';
+import 'package:stalker/logger/logger.dart';
 import 'package:stalker/map/map_styles.dart';
 import 'package:stalker/stalk/stalk_machine.dart';
 import 'package:stalker/stalk/stalk_message_hub.dart';
@@ -36,9 +36,10 @@ class _MapPageState extends State<MapPage> {
 
   late LiveData<User> liveUser = LiveData(widget.user);
 
-  final Map<Id, Uint8List> cachedImages = <Id, Uint8List>{};
+  final Map<Id, BitmapDescriptor> cachedImages = <Id, BitmapDescriptor>{};
   final Map<Id, Image> cachedResult = <Id, Image>{};
   final Map<Id, UserIconProps> cachedProps = <Id, UserIconProps>{};
+  final Map<Id, MarkerId> cachedMarkerIds = <Id, MarkerId>{};
 
   bool opacityLoaderPingPong = true;
   GoogleMapController? mapController;
@@ -96,13 +97,11 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _updateMarker(UserIconProps props) async {
-    await _fetchIconForUser(props);
-
-    if (cachedImages[props.user.id] == null) {
-      markers.removeWhere((e) => e.markerId.value == '${props.user.id}');
+    if (!props.user.hasLocation) {
       return;
     }
 
+    await _fetchIconForUser(props);
     setState(() {
       markers = {...markers, _markerFromUser(props.user)};
     });
@@ -111,7 +110,8 @@ class _MapPageState extends State<MapPage> {
   Future<bool> _fetchIconForUser(UserIconProps props) async {
     final result = await UserIconProvider().fetch(props);
     if (cachedProps[props.user.id] == props &&
-        cachedResult[props.user.id] == result) {
+        cachedResult[props.user.id] == result &&
+        cachedImages[props.user.id] != null) {
       return false;
     }
     cachedProps[props.user.id] = props;
@@ -120,11 +120,12 @@ class _MapPageState extends State<MapPage> {
     final bitmapHelper = await BitmapHelper.fromProvider(result.image);
     final headed = bitmapHelper.buildHeaded();
     if (props.grayScale == 0) {
-      cachedImages[props.user.id] = headed;
+      cachedImages[props.user.id] = BitmapDescriptor.fromBytes(headed);
     } else {
       final image = img.decodeImage(headed);
       final grayScale = img.grayscale(image!, amount: props.grayScale);
-      cachedImages[props.user.id] = img.encodePng(grayScale);
+      cachedImages[props.user.id] =
+          BitmapDescriptor.fromBytes(img.encodePng(grayScale));
       // TODO cache image processing
     }
     return true;
@@ -150,7 +151,7 @@ class _MapPageState extends State<MapPage> {
 
   Marker _markerFromUser(User e) {
     return Marker(
-      markerId: MarkerId('${e.id}'),
+      markerId: cachedMarkerIds[e.id] ??= MarkerId('${e.id}'),
       alpha: (e.id == ActiveUser().value?.id
                   ? stalkerLastSeenImageNotifier
                   : userLastSeenImageNotifier)
@@ -162,7 +163,7 @@ class _MapPageState extends State<MapPage> {
         e.lastLocationLongitude!,
       ),
       anchor: const Offset(0.5, 0.5),
-      icon: BitmapDescriptor.fromBytes(cachedImages[e.id]!),
+      icon: cachedImages[e.id]!,
       onTap: () => fabOpacity.value = 0,
     );
   }
