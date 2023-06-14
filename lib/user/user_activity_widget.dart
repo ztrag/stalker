@@ -10,6 +10,7 @@ class UserActivityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO Needs to load from db in case of background updates
     return ValueListenableBuilder(
       valueListenable: StalkMessageHub().getRecentMessagesNotifier(user.id),
       builder: (_, numRecentMessages, ___) => numRecentMessages <= 0

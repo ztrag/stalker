@@ -76,10 +76,10 @@ class StalkTransmitter {
       ..state = TransmissionState.started
       ..targetId = target.id
       ..stalkerId = stalker.id;
+    _currentTransmission = LiveData(transmission);
     Db.db.then((db) async {
       await db.writeTxn(() => db.transmissions.put(transmission));
-      _currentTransmission = LiveData(transmission)
-        ..inCollection(db.transmissions);
+      _currentTransmission!.inCollection(db.transmissions);
     });
     _isTransmitting = true;
 

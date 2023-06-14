@@ -33,8 +33,13 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   late final StalkMachine stalkMachine = StalkMachine(widget.user);
+
   late LiveData<User> liveUser = LiveData(widget.user);
+
   final Map<Id, Uint8List> cachedImages = <Id, Uint8List>{};
+  final Map<Id, Image> cachedResult = <Id, Image>{};
+  final Map<Id, UserIconProps> cachedProps = <Id, UserIconProps>{};
+
   bool opacityLoaderPingPong = true;
   GoogleMapController? mapController;
   late final UserLastSeenImageNotifier userLastSeenImageNotifier =
@@ -47,7 +52,7 @@ class _MapPageState extends State<MapPage> {
       UserLastSeenImageNotifier(
     user: ActiveUser().value!,
     size: UserIconSize.map,
-    baseOpacity: 0.8,
+    baseOpacity: 0.95,
   );
   late final ValueNotifier<DateTime?> userLastSeenTextTickerNotifier =
       ValueNotifier(widget.user.lastLocationTimestamp);
@@ -55,18 +60,27 @@ class _MapPageState extends State<MapPage> {
       Ticker(userLastSeenTextTickerNotifier, kTickerTextThresholds);
   final ValueNotifier<double> fabOpacity = ValueNotifier(1);
   bool hasCentered = false;
+  Set<Marker> markers = {};
 
   @override
   void initState() {
     super.initState();
     _monitorTarget();
-    userLastSeenImageNotifier.addListener(
-      () => _fetchIconForUser(userLastSeenImageNotifier.value),
-    );
-    stalkerLastSeenImageNotifier.addListener(
-      () => _fetchIconForUser(stalkerLastSeenImageNotifier.value),
-    );
-    _fetchIcons();
+    userLastSeenImageNotifier.addListener(_updateTarget);
+    stalkerLastSeenImageNotifier.addListener(_updateStalker);
+    liveUser.addListener(_updateTarget);
+    ActiveUser().addListener(_updateStalker);
+    _initMarkers();
+  }
+
+  void _monitorTarget() async {
+    final db = await Db.db;
+    liveUser.inCollection(db.users);
+  }
+
+  void _initMarkers() async {
+    await _updateMarker(userLastSeenImageNotifier.value);
+    await _updateMarker(stalkerLastSeenImageNotifier.value);
   }
 
   @override
@@ -76,21 +90,32 @@ class _MapPageState extends State<MapPage> {
     userLastSeenImageNotifier.dispose();
     userLastSeenTextTicker.dispose();
     stalkerLastSeenImageNotifier.dispose();
+    ActiveUser().removeListener(_updateStalker);
     super.dispose();
   }
 
-  void _monitorTarget() async {
-    final db = await Db.db;
-    liveUser.inCollection(db.users);
+  Future<void> _updateMarker(UserIconProps props) async {
+    await _fetchIconForUser(props);
+
+    if (cachedImages[props.user.id] == null) {
+      markers.removeWhere((e) => e.markerId.value == '${props.user.id}');
+      return;
+    }
+
+    setState(() {
+      markers = {...markers, _markerFromUser(props.user)};
+    });
   }
 
-  void _fetchIcons() async {
-    await _fetchIconForUser(stalkerLastSeenImageNotifier.value);
-    await _fetchIconForUser(userLastSeenImageNotifier.value);
-  }
-
-  Future<void> _fetchIconForUser(UserIconProps props) async {
+  Future<bool> _fetchIconForUser(UserIconProps props) async {
     final result = await UserIconProvider().fetch(props);
+    if (cachedProps[props.user.id] == props &&
+        cachedResult[props.user.id] == result) {
+      return false;
+    }
+    cachedProps[props.user.id] = props;
+    cachedResult[props.user.id] = result;
+
     final bitmapHelper = await BitmapHelper.fromProvider(result.image);
     final headed = bitmapHelper.buildHeaded();
     if (props.grayScale == 0) {
@@ -101,192 +126,199 @@ class _MapPageState extends State<MapPage> {
       cachedImages[props.user.id] = img.encodePng(grayScale);
       // TODO cache image processing
     }
-    setState(() {});
+    return true;
+  }
+
+  void _updateTarget() {
+    userLastSeenImageNotifier.event.value =
+        liveUser.value?.lastLocationTimestamp;
+    userLastSeenTextTickerNotifier.value =
+        liveUser.value?.lastLocationTimestamp;
+    _updateMarker(
+      userLastSeenImageNotifier.value.copyWith(user: liveUser.value),
+    );
+  }
+
+  void _updateStalker() {
+    stalkerLastSeenImageNotifier.event.value =
+        ActiveUser().value!.lastLocationTimestamp;
+    _updateMarker(
+      stalkerLastSeenImageNotifier.value.copyWith(user: ActiveUser().value),
+    );
+  }
+
+  Marker _markerFromUser(User e) {
+    return Marker(
+      markerId: MarkerId('${e.id}'),
+      alpha: (e.id == ActiveUser().value?.id
+                  ? stalkerLastSeenImageNotifier
+                  : userLastSeenImageNotifier)
+              .value
+              .opacity *
+          0.8,
+      position: LatLng(
+        e.lastLocationLatitude!,
+        e.lastLocationLongitude!,
+      ),
+      anchor: const Offset(0.5, 0.5),
+      icon: BitmapDescriptor.fromBytes(cachedImages[e.id]!),
+      onTap: () => fabOpacity.value = 0,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: liveUser,
-      builder: (_, __) {
-        userLastSeenImageNotifier.event.value =
-            liveUser.value?.lastLocationTimestamp;
-        userLastSeenTextTickerNotifier.value =
-            liveUser.value?.lastLocationTimestamp;
-        return Scaffold(
-          extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            title: AnimatedBuilder(
-              animation: StalkMessageHub().getRecentMessagesNotifier(),
-              builder: (_, __) => LoadingText(
-                length: StalkMessageHub().getRecentMessagesNotifier().value,
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        title: AnimatedBuilder(
+          animation: StalkMessageHub().getRecentMessagesNotifier(),
+          builder: (_, __) => LoadingText(
+            length: StalkMessageHub().getRecentMessagesNotifier().value,
+          ),
+        ),
+      ),
+      body: Platform.isIOS
+          ? Container()
+          : GoogleMap(
+              onMapCreated: (controller) {
+                mapController = controller;
+                _maybeCenter();
+                controller.setMapStyle(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? kDarkMap
+                        : kLightMap);
+              },
+              markers: markers,
+              zoomControlsEnabled: false,
+              onTap: (latLng) => fabOpacity.value = 1,
+              initialCameraPosition: CameraPosition(
+                target: _centerLatLng(),
+                zoom: 16,
               ),
             ),
-          ),
-          body: Platform.isIOS
-              ? Container()
-              : AnimatedBuilder(
-                  animation: ActiveUser(),
-                  builder: (_, __) {
-                    final usersForMarkers = _getUsersForMarkers();
-                    _maybeCenter(usersForMarkers);
-                    return GoogleMap(
-                      onMapCreated: (controller) {
-                        mapController = controller;
-                        _maybeCenter(usersForMarkers);
-                        controller.setMapStyle(
-                            Theme.of(context).brightness == Brightness.dark
-                                ? kDarkMap
-                                : kLightMap);
-                      },
-                      markers: usersForMarkers
-                          .map((e) => Marker(
-                                markerId: MarkerId('${e.id}'),
-                                alpha: userLastSeenImageNotifier.value.opacity *
-                                    0.8,
-                                position: LatLng(
-                                  e.lastLocationLatitude!,
-                                  e.lastLocationLongitude!,
+      floatingActionButton: ValueListenableBuilder<double>(
+        valueListenable: fabOpacity,
+        builder: (_, __, child) => AnimatedOpacity(
+          opacity: fabOpacity.value,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInQuint,
+          child: child,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Column(
+                  children: [
+                    ...[ActiveUser().value!, widget.user]
+                        .map(
+                          (e) => IconButton(
+                            onPressed: () async {
+                              final db = await Db.db;
+                              final user = await db.users.get(e.id);
+                              mapController?.moveCamera(CameraUpdate.newLatLng(
+                                  _latLngFromUser(user!)));
+                            },
+                            icon: SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: Theme(
+                                data: ThemeData(
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .apply(fontSizeFactor: 0.5),
                                 ),
-                                anchor: const Offset(0.5, 0.5),
-                                icon: BitmapDescriptor.fromBytes(
-                                    cachedImages[e.id]!),
-                                onTap: () => fabOpacity.value = 0,
-                              ))
-                          .toSet(),
-                      zoomControlsEnabled: false,
-                      onTap: (latLng) => fabOpacity.value = 1,
-                      initialCameraPosition: CameraPosition(
-                        target: _centerLatLng(),
-                        zoom: 16,
-                      ),
-                    );
-                  }),
-          floatingActionButton: ValueListenableBuilder<double>(
-            valueListenable: fabOpacity,
-            builder: (_, __, child) => AnimatedOpacity(
-              opacity: fabOpacity.value,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeInQuint,
-              child: child,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Column(
-                      children: [
-                        ...[ActiveUser().value!, widget.user]
-                            .map(
-                              (e) => IconButton(
-                                onPressed: () async {
-                                  final db = await Db.db;
-                                  final user = await db.users.get(e.id);
-                                  mapController?.moveCamera(
-                                      CameraUpdate.newLatLng(
-                                          _latLngFromUser(user!)));
-                                },
-                                icon: SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: Theme(
-                                    data: ThemeData(
-                                      textTheme: Theme.of(context)
-                                          .textTheme
-                                          .apply(fontSizeFactor: 0.5),
-                                    ),
-                                    child: UserIconWidget(
-                                      user: e,
-                                      size: UserIconSize.small,
-                                    ),
-                                  ),
+                                child: UserIconWidget(
+                                  user: e,
+                                  size: UserIconSize.small,
                                 ),
                               ),
-                            )
-                            .toList(),
-                        UserTimeSinceLastLocation(
-                          user: widget.user,
-                          style: Theme.of(context).textTheme.labelSmall,
-                          textScaleFactor: 1,
-                        ),
-                        UserDistanceFromStalker(user: widget.user),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                ValueListenableBuilder(
-                  valueListenable: stalkMachine.isAvailable,
-                  builder: (_, isAvailable, ___) => AnimatedOpacity(
-                    opacity: isAvailable
-                        ? 1
-                        : opacityLoaderPingPong
-                            ? 0.5
-                            : 0.25,
-                    onEnd: () {
-                      if (!stalkMachine.isAvailable.value) {
-                        setState(() {
-                          opacityLoaderPingPong = !opacityLoaderPingPong;
-                        });
-                      }
-                    },
-                    duration: isAvailable
-                        ? const Duration(milliseconds: 250)
-                        : const Duration(seconds: 1),
-                    curve: Curves.easeInOut,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        if (stalkMachine.isAvailable.value) {
-                          stalkMachine.stalk();
-                        } else {
-                          stalkMachine.toggleContinuousMode();
-                        }
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(14.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.asset(
-                                  'assets/images/eye-left-fuzz-small.png'),
                             ),
                           ),
-                          Positioned(
-                            bottom: 4,
-                            child: AnimatedBuilder(
-                              animation: Listenable.merge([
-                                stalkMachine.hasSent,
-                                stalkMachine.hasReceivedAck,
-                                stalkMachine.hasReceivedLocation,
-                              ]),
-                              builder: (_, __) => _getStalkStateIcon(),
-                            ),
-                          ),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: stalkMachine.isInContinuousMode,
-                            builder: (_, value, child) => value
-                                ? const Positioned(
-                                    top: 1,
-                                    child: Text('∞', textScaleFactor: 0.7),
-                                  )
-                                : Wrap(),
-                          ),
-                        ],
-                      ),
+                        )
+                        .toList(),
+                    UserTimeSinceLastLocation(
+                      user: widget.user,
+                      style: Theme.of(context).textTheme.labelSmall,
+                      textScaleFactor: 1,
                     ),
-                  ),
+                    UserDistanceFromStalker(user: widget.user),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 4),
+            ValueListenableBuilder(
+              valueListenable: stalkMachine.isAvailable,
+              builder: (_, isAvailable, ___) => AnimatedOpacity(
+                opacity: isAvailable
+                    ? 1
+                    : opacityLoaderPingPong
+                        ? 0.5
+                        : 0.25,
+                onEnd: () {
+                  if (!stalkMachine.isAvailable.value) {
+                    setState(() {
+                      opacityLoaderPingPong = !opacityLoaderPingPong;
+                    });
+                  }
+                },
+                duration: isAvailable
+                    ? const Duration(milliseconds: 250)
+                    : const Duration(seconds: 1),
+                curve: Curves.easeInOut,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    if (stalkMachine.isAvailable.value) {
+                      stalkMachine.stalk();
+                    } else {
+                      stalkMachine.toggleContinuousMode();
+                    }
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                              'assets/images/eye-left-fuzz-small.png'),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 4,
+                        child: AnimatedBuilder(
+                          animation: Listenable.merge([
+                            stalkMachine.hasSent,
+                            stalkMachine.hasReceivedAck,
+                            stalkMachine.hasReceivedLocation,
+                          ]),
+                          builder: (_, __) => _getStalkStateIcon(),
+                        ),
+                      ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: stalkMachine.isInContinuousMode,
+                        builder: (_, value, child) => value
+                            ? const Positioned(
+                                top: 1,
+                                child: Text('∞', textScaleFactor: 0.7),
+                              )
+                            : Wrap(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -314,15 +346,6 @@ class _MapPageState extends State<MapPage> {
         ),
       ],
     );
-  }
-
-  List<User> _getUsersForMarkers() {
-    final target = liveUser.value!;
-    final stalker = ActiveUser().value!;
-    return [
-      if (cachedImages[target.id] != null && target.hasLocation) target,
-      if (cachedImages[stalker.id] != null && stalker.hasLocation) stalker,
-    ];
   }
 
   LatLng _centerLatLng() {
@@ -356,20 +379,16 @@ class _MapPageState extends State<MapPage> {
     return LatLngBounds(northeast: LatLng(x1, y1), southwest: LatLng(x0, y0));
   }
 
-  void _maybeCenter(List<User> usersForMarkers) async {
+  void _maybeCenter() async {
     if (hasCentered) {
       return;
     }
 
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (mapController != null && usersForMarkers.length > 1 && !hasCentered) {
-      mapController!.moveCamera(CameraUpdate.newLatLngBounds(
-          boundsFromLatLngList(usersForMarkers
-              .map((e) =>
-                  LatLng(e.lastLocationLatitude!, e.lastLocationLongitude!))
-              .toList()),
-          100));
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (mapController != null && markers.length > 1 && !hasCentered) {
       hasCentered = true;
+      mapController!.moveCamera(CameraUpdate.newLatLngBounds(
+          boundsFromLatLngList(markers.map((e) => e.position).toList()), 100));
     }
   }
 }
