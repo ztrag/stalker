@@ -61,6 +61,7 @@ class _MapPageState extends State<MapPage> {
   final ValueNotifier<double> fabOpacity = ValueNotifier(1);
   bool hasCentered = false;
   Set<Marker> markers = {};
+  bool hideMap = false;
 
   @override
   void initState() {
@@ -168,159 +169,173 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: AnimatedBuilder(
-          animation: StalkMessageHub().getRecentMessagesNotifier(),
-          builder: (_, __) => Row(
-            children: [
-              UserDistanceFromStalker(user: widget.user, withAwaySuffix: true),
-              LoadingText(
-                length: StalkMessageHub().getRecentMessagesNotifier().value,
-              ),
-            ],
+    return WillPopScope(
+      onWillPop: () async {
+        hideMap = true;
+        setState(() {});
+        await Future.delayed(const Duration(milliseconds: 200));
+        return true;
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          title: AnimatedBuilder(
+            animation: StalkMessageHub().getRecentMessagesNotifier(),
+            builder: (_, __) => Row(
+              children: [
+                UserDistanceFromStalker(
+                    user: widget.user, withAwaySuffix: true),
+                LoadingText(
+                  length: StalkMessageHub().getRecentMessagesNotifier().value,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      body: Platform.isIOS
-          ? Container()
-          : GoogleMap(
-              onMapCreated: (controller) {
-                mapController = controller;
-                _maybeCenter();
-                controller.setMapStyle(
-                    Theme.of(context).brightness == Brightness.dark
-                        ? kDarkMap
-                        : kLightMap);
-              },
-              markers: markers,
-              zoomControlsEnabled: false,
-              onTap: (latLng) => fabOpacity.value = 1,
-              initialCameraPosition: CameraPosition(
-                target: _centerLatLng(),
-                zoom: 16,
+        body: Platform.isIOS
+            ? Container()
+            : AnimatedScale(
+                duration: const Duration(milliseconds: 200),
+                scale: hideMap ? 0 : 1,
+                child: GoogleMap(
+                  onMapCreated: (controller) {
+                    mapController = controller;
+                    _maybeCenter();
+                    controller.setMapStyle(
+                        Theme.of(context).brightness == Brightness.dark
+                            ? kDarkMap
+                            : kLightMap);
+                  },
+                  markers: markers,
+                  zoomControlsEnabled: false,
+                  onTap: (latLng) => fabOpacity.value = 1,
+                  initialCameraPosition: CameraPosition(
+                    target: _centerLatLng(),
+                    zoom: 16,
+                  ),
+                ),
               ),
-            ),
-      floatingActionButton: ValueListenableBuilder<double>(
-        valueListenable: fabOpacity,
-        builder: (_, __, child) => AnimatedOpacity(
-          opacity: fabOpacity.value,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInQuint,
-          child: child,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Column(
-                  children: [
-                    ...[ActiveUser().value!, widget.user]
-                        .map(
-                          (e) => IconButton(
-                            onPressed: () async {
-                              final db = await Db.db;
-                              final user = await db.users.get(e.id);
-                              mapController?.moveCamera(CameraUpdate.newLatLng(
-                                  _latLngFromUser(user!)));
-                            },
-                            icon: SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: Theme(
-                                data: ThemeData(
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .apply(fontSizeFactor: 0.5),
-                                ),
-                                child: UserIconWidget(
-                                  user: e,
-                                  size: UserIconSize.small,
+        floatingActionButton: ValueListenableBuilder<double>(
+          valueListenable: fabOpacity,
+          builder: (_, __, child) => AnimatedOpacity(
+            opacity: fabOpacity.value,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInQuint,
+            child: child,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Column(
+                    children: [
+                      ...[ActiveUser().value!, widget.user]
+                          .map(
+                            (e) => IconButton(
+                              onPressed: () async {
+                                final db = await Db.db;
+                                final user = await db.users.get(e.id);
+                                mapController?.moveCamera(
+                                    CameraUpdate.newLatLng(
+                                        _latLngFromUser(user!)));
+                              },
+                              icon: SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: Theme(
+                                  data: ThemeData(
+                                    textTheme: Theme.of(context)
+                                        .textTheme
+                                        .apply(fontSizeFactor: 0.5),
+                                  ),
+                                  child: UserIconWidget(
+                                    user: e,
+                                    size: UserIconSize.small,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        )
-                        .toList(),
-                    UserTimeSinceLastLocation(
-                      user: widget.user,
-                      style: Theme.of(context).textTheme.labelSmall,
-                      textScaleFactor: 1,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            ValueListenableBuilder(
-              valueListenable: stalkMachine.isAvailable,
-              builder: (_, isAvailable, ___) => AnimatedOpacity(
-                opacity: isAvailable
-                    ? 1
-                    : opacityLoaderPingPong
-                        ? 0.5
-                        : 0.25,
-                onEnd: () {
-                  if (!stalkMachine.isAvailable.value) {
-                    setState(() {
-                      opacityLoaderPingPong = !opacityLoaderPingPong;
-                    });
-                  }
-                },
-                duration: isAvailable
-                    ? const Duration(milliseconds: 250)
-                    : const Duration(seconds: 1),
-                curve: Curves.easeInOut,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    if (stalkMachine.isAvailable.value) {
-                      stalkMachine.stalk();
-                    } else {
-                      stalkMachine.toggleContinuousMode();
-                    }
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.asset(
-                              'assets/images/eye-left-fuzz-small.png'),
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 4,
-                        child: AnimatedBuilder(
-                          animation: Listenable.merge([
-                            stalkMachine.hasSent,
-                            stalkMachine.hasReceivedAck,
-                            stalkMachine.hasReceivedLocation,
-                          ]),
-                          builder: (_, __) => _getStalkStateIcon(),
-                        ),
-                      ),
-                      ValueListenableBuilder<bool>(
-                        valueListenable: stalkMachine.isInContinuousMode,
-                        builder: (_, value, child) => value
-                            ? const Positioned(
-                                top: 1,
-                                child: Text('∞', textScaleFactor: 0.7),
-                              )
-                            : Wrap(),
+                          )
+                          .toList(),
+                      UserTimeSinceLastLocation(
+                        user: widget.user,
+                        style: Theme.of(context).textTheme.labelSmall,
+                        textScaleFactor: 1,
                       ),
                     ],
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              ValueListenableBuilder(
+                valueListenable: stalkMachine.isAvailable,
+                builder: (_, isAvailable, ___) => AnimatedOpacity(
+                  opacity: isAvailable
+                      ? 1
+                      : opacityLoaderPingPong
+                          ? 0.5
+                          : 0.25,
+                  onEnd: () {
+                    if (!stalkMachine.isAvailable.value) {
+                      setState(() {
+                        opacityLoaderPingPong = !opacityLoaderPingPong;
+                      });
+                    }
+                  },
+                  duration: isAvailable
+                      ? const Duration(milliseconds: 250)
+                      : const Duration(seconds: 1),
+                  curve: Curves.easeInOut,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      if (stalkMachine.isAvailable.value) {
+                        stalkMachine.stalk();
+                      } else {
+                        stalkMachine.toggleContinuousMode();
+                      }
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.asset(
+                                'assets/images/eye-left-fuzz-small.png'),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 4,
+                          child: AnimatedBuilder(
+                            animation: Listenable.merge([
+                              stalkMachine.hasSent,
+                              stalkMachine.hasReceivedAck,
+                              stalkMachine.hasReceivedLocation,
+                            ]),
+                            builder: (_, __) => _getStalkStateIcon(),
+                          ),
+                        ),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: stalkMachine.isInContinuousMode,
+                          builder: (_, value, child) => value
+                              ? const Positioned(
+                                  top: 1,
+                                  child: Text('∞', textScaleFactor: 0.7),
+                                )
+                              : Wrap(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
