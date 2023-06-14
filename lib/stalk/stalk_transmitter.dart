@@ -84,12 +84,17 @@ class StalkTransmitter {
     _isTransmitting = true;
 
     if (isInBackground) {
+      final distanceFromUser =
+          UserDistanceFromStalker.getDistanceFromUser(target);
+      // TODO update the notification
       AndroidForegroundService.startAndroidForegroundService(
         content: NotificationContent(
           id: 11,
           channelKey: StalkerNotificationChannel.stalk.key,
           title: '${target.displayName} is watching you...',
-          body: '${UserDistanceFromStalker.getDistanceFromUser(target)} away',
+          body: distanceFromUser != null
+              ? '$distanceFromUser away - '
+              : 'Sharing your location.',
           payload: {'id': '${target.id}'},
         ),
         foregroundServiceType: ForegroundServiceType.location,

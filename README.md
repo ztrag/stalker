@@ -20,7 +20,8 @@ Find someone.
 . User image file://path/to/image-asset.png in bigpicture
 . Sound
 . Layout multiple messages and stuff
-. Send message from notif
+. Send message from notification
+. Update distance from stalker
 
 ### Chat
 . Chat Model / db.
@@ -29,9 +30,6 @@ Find someone.
 . ChatPage appBar -> Go to MagPage.
 . ChatPage chats -> Show chat history
 . HomePage -> Show last message.
-
-### Continuous Stalk
-. Keep on stalking
 
 ### Missed Stalk Request Task
 . Schedule for retry through a task.
