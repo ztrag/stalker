@@ -175,8 +175,13 @@ class _MapPageState extends State<MapPage> {
         backgroundColor: Colors.transparent,
         title: AnimatedBuilder(
           animation: StalkMessageHub().getRecentMessagesNotifier(),
-          builder: (_, __) => LoadingText(
-            length: StalkMessageHub().getRecentMessagesNotifier().value,
+          builder: (_, __) => Row(
+            children: [
+              UserDistanceFromStalker(user: widget.user, withAwaySuffix: true),
+              LoadingText(
+                length: StalkMessageHub().getRecentMessagesNotifier().value,
+              ),
+            ],
           ),
         ),
       ),
@@ -247,7 +252,6 @@ class _MapPageState extends State<MapPage> {
                       style: Theme.of(context).textTheme.labelSmall,
                       textScaleFactor: 1,
                     ),
-                    UserDistanceFromStalker(user: widget.user),
                   ],
                 ),
               ),

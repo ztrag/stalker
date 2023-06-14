@@ -6,9 +6,13 @@ import 'package:stalker/user/active_user.dart';
 
 class UserDistanceFromStalker extends StatelessWidget {
   final User user;
+  final bool withAwaySuffix;
 
-  const UserDistanceFromStalker({Key? key, required this.user})
-      : super(key: key);
+  const UserDistanceFromStalker({
+    Key? key,
+    required this.user,
+    this.withAwaySuffix = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +29,8 @@ class UserDistanceFromStalker extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: Text(
-              distance,
-              style: Theme.of(context).textTheme.labelSmall,
-              textScaleFactor: 0.9,
+              '$distance${withAwaySuffix ? ' away' : ''}',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           );
         },
