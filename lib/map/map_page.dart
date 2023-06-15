@@ -47,17 +47,13 @@ class _MapPageState extends State<MapPage> {
     _monitorTarget();
     liveUser.addListener(_updateTarget);
     ActiveUser().addListener(_updateStalker);
-    _initMarkers();
+    _updateMarker(ActiveUser().value);
+    _updateMarker(liveUser.value);
   }
 
   void _monitorTarget() async {
     final db = await Db.db;
     liveUser.inCollection(db.users);
-  }
-
-  void _initMarkers() async {
-    await _updateMarker(liveUser.value);
-    await _updateMarker(ActiveUser().value);
   }
 
   @override
@@ -69,7 +65,7 @@ class _MapPageState extends State<MapPage> {
     super.dispose();
   }
 
-  Future<void> _updateMarker(User? user) async {
+  void _updateMarker(User? user) {
     if (user == null) {
       return;
     }
@@ -81,19 +77,19 @@ class _MapPageState extends State<MapPage> {
       return;
     }
 
-    setState(() {
-      markers[user.id] = _markerFromUser(user);
-    });
+    markers[user.id] = _markerFromUser(user);
   }
 
   void _updateTarget() {
     userLastSeenTextTickerNotifier.value =
         liveUser.value?.lastLocationTimestamp;
     _updateMarker(liveUser.value);
+    setState(() {});
   }
 
   void _updateStalker() {
     _updateMarker(ActiveUser().value);
+    setState(() {});
   }
 
   Marker _markerFromUser(User e) {
@@ -104,7 +100,13 @@ class _MapPageState extends State<MapPage> {
       ),
       width: 50,
       height: 50,
-      builder: (context) => UserIconWidget(user: e),
+      builder: (context) => Opacity(
+        opacity: 0.9,
+        child: UserIconWidget(
+          user: e,
+          withActivity: false,
+        ),
+      ),
       // onTap: () => fabOpacity.value = 0,
     );
   }
@@ -140,7 +142,7 @@ class _MapPageState extends State<MapPage> {
                       .map<LatLng>((value) => value.point)
                       .toList()),
                   boundsOptions:
-                      const FitBoundsOptions(padding: EdgeInsets.all(20.0)),
+                      const FitBoundsOptions(padding: EdgeInsets.all(40.0)),
                   interactiveFlags:
                       InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                 ),
@@ -183,6 +185,13 @@ class _MapPageState extends State<MapPage> {
                                 _latLngFromUser(user!),
                                 mapController.zoom,
                               );
+                              final marker = markers[user.id];
+                              markers.remove(user.id);
+                              markers = {
+                                ...markers,
+                                if (marker != null) user.id: marker,
+                              };
+                              setState(() {});
                             },
                             icon: SizedBox(
                               width: 30,

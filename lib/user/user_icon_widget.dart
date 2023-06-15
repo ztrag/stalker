@@ -13,6 +13,7 @@ class UserIconWidget extends StatefulWidget {
   final Widget? errorWidget;
   final Uint8List? image;
   final UserIconSize size;
+  final bool withActivity;
 
   const UserIconWidget({
     Key? key,
@@ -20,6 +21,7 @@ class UserIconWidget extends StatefulWidget {
     this.errorWidget,
     this.image,
     this.size = UserIconSize.medium,
+    this.withActivity = true,
   }) : super(key: key);
 
   @override
@@ -79,7 +81,7 @@ class _UserIconWidgetState extends State<UserIconWidget> {
                   },
                 ),
         ),
-        Positioned(
+        if (widget.withActivity) Positioned(
           bottom: 0,
           left: 0,
           right: 0,
