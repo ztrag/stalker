@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
   geolocator_windows
   isar_flutter_libs
+  maps_launcher
   share_plus
   url_launcher_windows
 )

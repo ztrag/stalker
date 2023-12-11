@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:stalker/db/db.dart';
 import 'package:stalker/domain/user.dart';
 import 'package:stalker/live/live_data.dart';
@@ -10,6 +13,7 @@ import 'package:stalker/theme/loading_text.dart';
 import 'package:stalker/ticker/ticker.dart';
 import 'package:stalker/ticker/ticker_text.dart';
 import 'package:stalker/user/active_user.dart';
+import 'package:stalker/user/user_distance_from_stalker.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 import 'package:stalker/user/user_icon_widget.dart';
 import 'package:stalker/user/user_time_since_last_location.dart';
@@ -39,6 +43,9 @@ class _MapPageState extends State<MapPage> {
   final MapController mapController = MapController();
   Map<int, Marker> markers = {};
   bool hideMap = false;
+
+  bool isInteracting = false;
+  int? lockedUserId;
 
   @override
   void initState() {
@@ -83,11 +90,13 @@ class _MapPageState extends State<MapPage> {
     userLastSeenTextTickerNotifier.value =
         liveUser.value?.lastLocationTimestamp;
     _updateMarker(liveUser.value);
+    _recenterMap();
     setState(() {});
   }
 
   void _updateStalker() {
     _updateMarker(ActiveUser().value);
+    _recenterMap();
     setState(() {});
   }
 
@@ -101,9 +110,15 @@ class _MapPageState extends State<MapPage> {
       height: 50,
       builder: (context) => Opacity(
         opacity: 0.9,
-        child: UserIconWidget(
-          user: e,
-          withActivity: false,
+        child: GestureDetector(
+          onTap: () => MapsLauncher.launchCoordinates(
+            e.lastLocationLatitude!,
+            e.lastLocationLongitude!,
+          ),
+          child: UserIconWidget(
+            user: e,
+            withActivity: false,
+          ),
         ),
       ),
       // onTap: () => fabOpacity.value = 0,
@@ -143,6 +158,14 @@ class _MapPageState extends State<MapPage> {
                       const FitBoundsOptions(padding: EdgeInsets.all(40.0)),
                   interactiveFlags:
                       InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                  onPositionChanged: (_, hasGesture) {
+                    if(hasGesture) {
+                      setState(() {
+                        isInteracting = true;
+                        lockedUserId = null;
+                      });
+                    }
+                  },
                 ),
                 children: [
                   TileLayer(
@@ -179,10 +202,15 @@ class _MapPageState extends State<MapPage> {
                             onPressed: () async {
                               final db = await Db.db;
                               final user = await db.users.get(e.id);
-                              mapController.move(
-                                _latLngFromUser(user!),
-                                mapController.zoom,
-                              );
+
+                              if (lockedUserId != user!.id) {
+                                lockedUserId = user.id;
+                              } else {
+                                lockedUserId = null;
+                              }
+                              isInteracting = false;
+                              _recenterMap();
+
                               final marker = markers[user.id];
                               markers.remove(user.id);
                               markers = {
@@ -194,15 +222,25 @@ class _MapPageState extends State<MapPage> {
                             icon: SizedBox(
                               width: 30,
                               height: 30,
-                              child: Theme(
-                                data: ThemeData(
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .apply(fontSizeFactor: 0.5),
-                                ),
-                                child: UserIconWidget(
-                                  user: e,
-                                  size: UserIconSize.small,
+                              child: Container(
+                                padding: const EdgeInsets.all(1),
+                                decoration: lockedUserId != e.id
+                                    ? null
+                                    : BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(4)),
+                                        border: Border.all(color: Colors.pink),
+                                      ),
+                                child: Theme(
+                                  data: ThemeData(
+                                    textTheme: Theme.of(context)
+                                        .textTheme
+                                        .apply(fontSizeFactor: 0.5),
+                                  ),
+                                  child: UserIconWidget(
+                                    user: e,
+                                    size: UserIconSize.small,
+                                  ),
                                 ),
                               ),
                             ),
@@ -210,6 +248,11 @@ class _MapPageState extends State<MapPage> {
                         )
                         .toList(),
                     UserTimeSinceLastLocation(
+                      user: widget.user,
+                      style: Theme.of(context).textTheme.labelSmall,
+                      textScaler: const TextScaler.linear(1),
+                    ),
+                    UserDistanceFromStalker(
                       user: widget.user,
                       style: Theme.of(context).textTheme.labelSmall,
                       textScaler: const TextScaler.linear(1),
@@ -338,6 +381,24 @@ class _MapPageState extends State<MapPage> {
       if (latLng.longitude < y0) y0 = latLng.longitude;
     }
     return LatLngBounds(LatLng(x1, y1), LatLng(x0, y0));
+  }
+
+  void _recenterMap() {
+    if (isInteracting) {
+      return;
+    }
+
+    if (lockedUserId != null) {
+      mapController.move(
+        _latLngFromUser(lockedUserId == ActiveUser().value!.id
+            ? ActiveUser().value!
+            : liveUser.value!),
+        max(mapController.zoom, 15),
+      );
+    } else {
+      mapController.fitBounds(boundsFromLatLngList(
+          markers.values.map<LatLng>((value) => value.point).toList())!);
+    }
   }
 }
 

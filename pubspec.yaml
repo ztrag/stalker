@@ -49,6 +49,7 @@ dependencies:
   awesome_notifications: ^0.7.4+1
   flutter_map: ^4.0.0
   latlong2: ^0.8.2
+  maps_launcher: ^2.2.0
 
 dev_dependencies:
   flutter_test:

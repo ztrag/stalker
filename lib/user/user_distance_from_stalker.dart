@@ -7,11 +7,15 @@ import 'package:stalker/user/active_user.dart';
 class UserDistanceFromStalker extends StatelessWidget {
   final User user;
   final bool withAwaySuffix;
+  final TextStyle? style;
+  final TextScaler? textScaler;
 
   const UserDistanceFromStalker({
     Key? key,
     required this.user,
     this.withAwaySuffix = false,
+    this.style,
+    this.textScaler,
   }) : super(key: key);
 
   @override
@@ -30,7 +34,8 @@ class UserDistanceFromStalker extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: Text(
               '$distance${withAwaySuffix ? ' away' : ''}',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: style,
+              textScaler: textScaler,
             ),
           );
         },

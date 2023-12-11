@@ -5,8 +5,8 @@ import 'package:stalker/ticker/ticker_text.dart';
 
 class UserTimeSinceLastLocation extends StatelessWidget {
   final User user;
-  final TextStyle? style;
   final bool includeSuffix;
+  final TextStyle? style;
   final TextScaler? textScaler;
 
   const UserTimeSinceLastLocation({

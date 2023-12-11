@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:stalker/domain/user.dart';
+import 'package:stalker/user/active_user.dart';
 import 'package:stalker/user/token_text.dart';
+import 'package:stalker/user/user_distance_from_stalker.dart';
 import 'package:stalker/user/user_time_since_last_location.dart';
 
 class UserCardCenterColumn extends StatelessWidget {
@@ -25,10 +27,25 @@ class UserCardCenterColumn extends StatelessWidget {
           user: user,
           maxLines: hasName ? 1 : 2,
         ),
-        UserTimeSinceLastLocation(
-          user: user,
-          style: Theme.of(context).textTheme.labelSmall,
-          includeSuffix: true,
+        Row(
+          children: [
+            UserTimeSinceLastLocation(
+              user: user,
+              includeSuffix: true,
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+            if (user.id != ActiveUser().value?.id) ...[
+              const SizedBox(
+                height: 10,
+                child: VerticalDivider(),
+              ),
+              UserDistanceFromStalker(
+                user: user,
+                withAwaySuffix: true,
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ],
+          ],
         ),
       ],
     );
