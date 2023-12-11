@@ -26,36 +26,41 @@ class UserDistanceFromStalker extends StatelessWidget {
         initial: user,
         prepare: (db, user) => user.inCollection(db.users),
         builder: (user) {
-          final distance = getDistanceFromUser(user);
+          final distance =
+              getDistanceFromUser(user, withSuffix: withAwaySuffix);
           if (distance == null) {
             return const Wrap();
           }
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: Text(
-              '$distance${withAwaySuffix ? ' away' : ''}',
-              style: style,
-              textScaler: textScaler,
-            ),
+            child: Text(distance, style: style, textScaler: textScaler),
           );
         },
       ),
     );
   }
 
-  static String? getDistanceFromUser(User? user) {
+  static String? getDistanceFromUser(User? user, {bool withSuffix = true}) {
     if (!(user?.hasLocation ?? false) ||
         !(ActiveUser().value?.hasLocation ?? false)) {
       return null;
     }
-    return _prettyDistance(
+    return _distanceText(
       Geolocator.distanceBetween(
         ActiveUser().value!.lastLocationLatitude!,
         ActiveUser().value!.lastLocationLongitude!,
         user!.lastLocationLatitude!,
         user.lastLocationLongitude!,
       ),
+      withSuffix,
     );
+  }
+
+  static String _distanceText(double distance, bool withSuffix) {
+    if (distance < 10) {
+      return 'here';
+    }
+    return '${_prettyDistance(distance)}${withSuffix ? ' away' : ''}';
   }
 
   static String _prettyDistance(double distance) {

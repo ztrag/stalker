@@ -64,7 +64,7 @@ class StalkTransmitter {
     });
   }
 
-  void _startTransmission(User stalker) {
+  void _startTransmission(User stalker) async {
     if (_isTransmitting) {
       return;
     }
@@ -84,6 +84,7 @@ class StalkTransmitter {
     _isTransmitting = true;
 
     if (isInBackground) {
+      final target = await liveTarget;
       final distanceFromUser =
           UserDistanceFromStalker.getDistanceFromUser(target);
       // TODO update the notification
@@ -92,9 +93,7 @@ class StalkTransmitter {
           id: 11,
           channelKey: StalkerNotificationChannel.stalk.key,
           title: '${target.displayName} is watching you...',
-          body: distanceFromUser != null
-              ? '$distanceFromUser away - '
-              : 'Sharing your location.',
+          body: distanceFromUser ?? 'Sharing your location.',
           payload: {'id': '${target.id}'},
         ),
         foregroundServiceType: ForegroundServiceType.location,
@@ -106,7 +105,7 @@ class StalkTransmitter {
     }
   }
 
-  void _stopTransmission() {
+  void _stopTransmission() async {
     if (!_isTransmitting) {
       return;
     }
@@ -126,12 +125,13 @@ class StalkTransmitter {
     // TODO confirm with unread messages
 
     if (isInBackground) {
+      final target = await liveTarget;
       AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 10,
           channelKey: StalkerNotificationChannel.silentUnread.key,
           title: '${target.displayName} was watching you.',
-          body: '${UserDistanceFromStalker.getDistanceFromUser(target)} away',
+          body: UserDistanceFromStalker.getDistanceFromUser(target),
           actionType: ActionType.Default,
         ),
       );
@@ -170,5 +170,10 @@ class StalkTransmitter {
       saved.lastLocationAccuracy = position.accuracy;
       return db.users.put(saved);
     });
+  }
+
+  Future<User> get liveTarget async {
+    final db = await Db.db;
+    return (await db.users.get(target.id))!;
   }
 }
