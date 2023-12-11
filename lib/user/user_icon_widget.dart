@@ -81,12 +81,13 @@ class _UserIconWidgetState extends State<UserIconWidget> {
                   },
                 ),
         ),
-        if (widget.withActivity) Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: UserActivityWidget(user: widget.user),
-        ),
+        if (widget.withActivity)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: UserActivityWidget(user: widget.user),
+          ),
       ],
     );
   }

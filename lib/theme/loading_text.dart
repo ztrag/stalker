@@ -22,7 +22,7 @@ class LoadingText extends StatelessWidget {
         (index) => kLoadingChars[_kRandom.nextInt(kLoadingChars.length)],
       ).join(),
       overflow: TextOverflow.clip,
-      textScaleFactor: 0.6,
+      textScaler: const TextScaler.linear(0.6),
       style: Theme.of(context).textTheme.bodySmall!,
     );
   }

@@ -3,7 +3,6 @@ import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
@@ -35,8 +34,7 @@ class UserIconPicker extends ValueNotifier<UserIconPickerResult?> {
     final cropped = await _cropCircle(
         resized, ui.Size(_kSize.toDouble(), _kSize.toDouble()));
 
-    final byteData =
-        await cropped.toByteData(format: ui.ImageByteFormat.png);
+    final byteData = await cropped.toByteData(format: ui.ImageByteFormat.png);
     value = UserIconPickerResult(byteData!.buffer.asUint8List(), cropped);
   }
 

@@ -40,14 +40,14 @@ class TickerText extends StatefulWidget {
   final DateTime? event;
   final TextStyle? style;
   final bool includeSuffix;
-  final double? textScaleFactor;
+  final TextScaler? textScaler;
 
   const TickerText({
     Key? key,
     required this.event,
     this.style,
     this.includeSuffix = false,
-    this.textScaleFactor,
+    this.textScaler,
   }) : super(key: key);
 
   @override
@@ -79,9 +79,9 @@ class _TickerTextState extends State<TickerText> {
           ? Text(
               '$text${widget.includeSuffix && text != 'now' ? ' ago' : ''}',
               style: widget.style,
-              textScaleFactor: widget.textScaleFactor,
+              textScaler: widget.textScaler,
             )
-          : Wrap(),
+          : const Wrap(),
     );
   }
 }

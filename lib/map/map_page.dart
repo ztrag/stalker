@@ -10,7 +10,6 @@ import 'package:stalker/theme/loading_text.dart';
 import 'package:stalker/ticker/ticker.dart';
 import 'package:stalker/ticker/ticker_text.dart';
 import 'package:stalker/user/active_user.dart';
-import 'package:stalker/user/user_distance_from_stalker.dart';
 import 'package:stalker/user/user_icon_provider.dart';
 import 'package:stalker/user/user_icon_widget.dart';
 import 'package:stalker/user/user_time_since_last_location.dart';
@@ -122,7 +121,6 @@ class _MapPageState extends State<MapPage> {
           animation: StalkMessageHub().getRecentMessagesNotifier(),
           builder: (_, __) => Row(
             children: [
-              UserDistanceFromStalker(user: widget.user, withAwaySuffix: true),
               LoadingText(
                 length: StalkMessageHub().getRecentMessagesNotifier().value,
               ),
@@ -214,7 +212,7 @@ class _MapPageState extends State<MapPage> {
                     UserTimeSinceLastLocation(
                       user: widget.user,
                       style: Theme.of(context).textTheme.labelSmall,
-                      textScaleFactor: 1,
+                      textScaler: const TextScaler.linear(1),
                     ),
                   ],
                 ),
@@ -275,9 +273,12 @@ class _MapPageState extends State<MapPage> {
                         builder: (_, value, child) => value
                             ? const Positioned(
                                 top: 1,
-                                child: Text('∞', textScaleFactor: 0.7),
+                                child: Text(
+                                  '∞',
+                                  textScaler: TextScaler.linear(0.7),
+                                ),
                               )
-                            : Wrap(),
+                            : const Wrap(),
                       ),
                     ],
                   ),

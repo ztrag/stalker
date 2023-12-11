@@ -45,7 +45,8 @@ enum StalkerNotificationChannel {
         NotificationChannel(
           channelKey: StalkerNotificationChannel.silentUnread.key,
           channelName: StalkerNotificationChannel.silentUnread.name,
-          channelDescription: StalkerNotificationChannel.silentUnread.description,
+          channelDescription:
+              StalkerNotificationChannel.silentUnread.description,
           playSound: false,
           enableVibration: false,
         ),

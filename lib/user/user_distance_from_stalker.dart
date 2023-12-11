@@ -24,7 +24,7 @@ class UserDistanceFromStalker extends StatelessWidget {
         builder: (user) {
           final distance = getDistanceFromUser(user);
           if (distance == null) {
-            return Wrap();
+            return const Wrap();
           }
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
@@ -54,10 +54,10 @@ class UserDistanceFromStalker extends StatelessWidget {
   }
 
   static String _prettyDistance(double distance) {
-    if (distance > 10000) {
+    if (distance >= 10000) {
       // i.e. 10km 100km
       return '${(distance / 1000).toStringAsFixed(0)}km';
-    } else if (distance > 1000) {
+    } else if (distance >= 1050) {
       // i.e. 1.1km
       return '${(distance / 1000).toStringAsFixed(1)}km';
     }

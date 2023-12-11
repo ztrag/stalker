@@ -7,14 +7,14 @@ class UserTimeSinceLastLocation extends StatelessWidget {
   final User user;
   final TextStyle? style;
   final bool includeSuffix;
-  final double? textScaleFactor;
+  final TextScaler? textScaler;
 
   const UserTimeSinceLastLocation({
     Key? key,
     required this.user,
     this.style,
     this.includeSuffix = false,
-    this.textScaleFactor,
+    this.textScaler,
   }) : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class UserTimeSinceLastLocation extends StatelessWidget {
         event: user?.lastLocationTimestamp,
         style: style,
         includeSuffix: includeSuffix,
-        textScaleFactor: textScaleFactor,
+        textScaler: textScaler,
       ),
     );
   }

@@ -39,7 +39,7 @@ class UserEnabledSwitch extends StatelessWidget {
             builder: (_, __) {
               final isHidden = !isActiveUser && !ActiveUser().value!.isEnabled;
               if (user == null) {
-                return Wrap();
+                return const Wrap();
               }
               return AnimatedOpacity(
                 opacity: isHidden ? 0.1 : 1,

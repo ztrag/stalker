@@ -21,9 +21,12 @@ class _StalkerAppState extends State<StalkerApp> {
     super.initState();
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: NotificationTaskController.onActionReceivedMethod,
-      onNotificationCreatedMethod: NotificationTaskController.onNotificationCreatedMethod,
-      onNotificationDisplayedMethod: NotificationTaskController.onNotificationDisplayedMethod,
-      onDismissActionReceivedMethod: NotificationTaskController.onDismissActionReceivedMethod,
+      onNotificationCreatedMethod:
+          NotificationTaskController.onNotificationCreatedMethod,
+      onNotificationDisplayedMethod:
+          NotificationTaskController.onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod:
+          NotificationTaskController.onDismissActionReceivedMethod,
     );
   }
 

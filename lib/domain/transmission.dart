@@ -4,7 +4,7 @@ import 'package:stalker/domain/has_id.dart';
 part 'transmission.g.dart';
 
 @collection
-class Transmission with HasId{
+class Transmission with HasId {
   @override
   Id id = Isar.autoIncrement;
 
