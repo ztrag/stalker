@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -132,6 +133,8 @@ class _MapPageState extends State<MapPage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        iconTheme: const IconThemeData(color: Colors.black),
         title: AnimatedBuilder(
           animation: StalkMessageHub().getRecentMessagesNotifier(),
           builder: (_, __) => Row(
@@ -159,7 +162,7 @@ class _MapPageState extends State<MapPage> {
                   interactiveFlags:
                       InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                   onPositionChanged: (_, hasGesture) {
-                    if(hasGesture) {
+                    if (hasGesture) {
                       setState(() {
                         isInteracting = true;
                         lockedUserId = null;
@@ -255,7 +258,7 @@ class _MapPageState extends State<MapPage> {
                     UserDistanceFromStalker(
                       user: widget.user,
                       style: Theme.of(context).textTheme.labelSmall,
-                      textScaler: const TextScaler.linear(1),
+                      textScaler: const TextScaler.linear(0.6),
                     ),
                   ],
                 ),
